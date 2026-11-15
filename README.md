@@ -139,12 +139,6 @@ See [docs/development.md](docs/development.md) for testing with a personal
 access token and [docs/architecture.md](docs/architecture.md) for the code
 layout.
 
-## Legacy web dashboard
-
-Looking for the self-hosted web dashboard? It has been moved to the
-[`legacy/`](legacy/) folder. The CLI is now the primary product. The archived app
-is kept for reference and is not part of the root package build.
-
 ## License
 
 MIT

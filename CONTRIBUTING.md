@@ -18,7 +18,7 @@ Thanks for taking the time to contribute.
 3. Run `npm run dev` to start the CLI with `tsx`.
 4. Run `npm test` to confirm the suite is green.
 
-There is no database, Redis, Docker, or `.env` requirement. See
+There is no external service or `.env` requirement. See
 `docs/development.md` for using a personal access token during development.
 
 ## Adding a detector

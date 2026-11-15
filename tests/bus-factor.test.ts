@@ -81,7 +81,7 @@ describe('computeBusFactor', () => {
 })
 
 describe('concentrationRisk', () => {
-  it('uses the same thresholds as the legacy implementation', () => {
+  it('uses the documented risk thresholds', () => {
     expect(concentrationRisk(49.99)).toBe('green')
     expect(concentrationRisk(50)).toBe('yellow')
     expect(concentrationRisk(75)).toBe('yellow')

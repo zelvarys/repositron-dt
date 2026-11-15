@@ -6,7 +6,7 @@
 - npm
 - A GitHub account
 
-The CLI has no database, Redis, Docker, or environment file requirement.
+The CLI has no external service or environment file requirement.
 
 ## Setup
 
@@ -110,7 +110,6 @@ src/insights/              pure detectors, aggregates, scores, and types
 src/scan.ts                network orchestration and report assembly
 src/ui/                    Ink app, screens, tabs, and shared components
 tests/                     Vitest coverage for the pure logic
-legacy/                    archived web application
 ```
 
 ## Adding a detector

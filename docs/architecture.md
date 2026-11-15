@@ -1,9 +1,7 @@
 # Architecture
 
-Repositron used to be a hosted web application with an Express API, a BullMQ
-worker, Postgres, Redis, and a React frontend. The primary product is now a
-local-first terminal application. The old stack is preserved under `legacy/` for
-reference but is not built or deployed by the root package.
+Repositron is a local-first terminal application. It has no hosted backend,
+database, or background worker; everything runs from the CLI on your machine.
 
 ## Runtime overview
 
