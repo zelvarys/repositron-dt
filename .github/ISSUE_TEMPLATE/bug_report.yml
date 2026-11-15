@@ -38,12 +38,12 @@ body:
         - Authentication
         - Repository scanning
         - Dashboard
+        - Repository picker
+        - TUI rendering
         - Activity
         - Dependencies
-        - Workflows
-        - Structure
+        - CI
         - Tool adoption
-        - Settings
         - Other
     validations:
       required: true
@@ -51,14 +51,14 @@ body:
     id: logs
     attributes:
       label: Logs or screenshots
-      description: Add relevant console, server, or browser output.
+      description: Add relevant terminal output, error messages, and screenshots.
       render: shell
   - type: input
     id: environment
     attributes:
       label: Environment
-      description: Browser, Node version, and deployment method if relevant.
-      placeholder: Node 20, Chrome 130, local Docker
+      description: Operating system, terminal, Node version, and shell.
+      placeholder: macOS 15, iTerm2, Node 24, zsh
   - type: checkboxes
     id: checks
     attributes:

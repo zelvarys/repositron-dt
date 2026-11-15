@@ -34,12 +34,12 @@ body:
         - Authentication
         - Repository scanning
         - Dashboard
+        - Repository picker
+        - TUI rendering
         - Activity
         - Dependencies
-        - Workflows
-        - Structure
+        - CI
         - Tool adoption
-        - Settings
         - Documentation
         - Other
     validations:
