@@ -324,6 +324,7 @@ function buildReport(
     forks: repo.forks_count,
     language: repo.language,
     description: repo.description,
+    contributorCount: context.contributors.length,
     metrics,
     health,
     busFactor,

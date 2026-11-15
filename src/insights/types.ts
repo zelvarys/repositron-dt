@@ -190,6 +190,7 @@ export type RepositoryReport = {
   forks: number
   language: string | null
   description: string | null
+  contributorCount: number
   metrics: RepoMetrics
   health: RepoHealth
   busFactor: BusFactor
