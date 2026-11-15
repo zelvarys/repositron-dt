@@ -1,4 +1,8 @@
-import type { GitHubClient } from './client.js'
+import { GitHubApiError, type GitHubClient } from './client.js'
+import {
+  parseDependencies,
+  type ParseResult,
+} from '../insights/dependencies.js'
 
 export type GitHubCommitListItem = {
   sha: string
@@ -135,12 +139,17 @@ export async function fetchContents(
   ref: string,
 ): Promise<GitHubContentEntry[]> {
   const encoded = encodePath(path)
-  const data = await client.get<GitHubContentEntry[] | GitHubContentEntry>(
-    `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents/${encoded}?ref=${encodeURIComponent(
-      ref,
-    )}`,
-  )
-  return Array.isArray(data) ? data : [data]
+  try {
+    const data = await client.get<GitHubContentEntry[] | GitHubContentEntry>(
+      `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents/${encoded}?ref=${encodeURIComponent(
+        ref,
+      )}`,
+    )
+    return Array.isArray(data) ? data : [data]
+  } catch (error) {
+    if (error instanceof GitHubApiError && error.status === 404) return []
+    throw error
+  }
 }
 
 export async function readFileText(
@@ -151,17 +160,22 @@ export async function readFileText(
   ref: string,
 ): Promise<string | null> {
   const encoded = encodePath(path)
-  const data = await client.get<
-    | { type: 'file'; content: string; encoding: string }
-    | GitHubContentEntry[]
-  >(
-    `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents/${encoded}?ref=${encodeURIComponent(
-      ref,
-    )}`,
-  )
-  if (Array.isArray(data)) return null
-  if (data.type !== 'file' || data.encoding !== 'base64') return null
-  return Buffer.from(data.content, 'base64').toString('utf8')
+  try {
+    const data = await client.get<
+      | { type: 'file'; content: string; encoding: string }
+      | GitHubContentEntry[]
+    >(
+      `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents/${encoded}?ref=${encodeURIComponent(
+        ref,
+      )}`,
+    )
+    if (Array.isArray(data)) return null
+    if (data.type !== 'file' || data.encoding !== 'base64') return null
+    return Buffer.from(data.content, 'base64').toString('utf8')
+  } catch (error) {
+    if (error instanceof GitHubApiError && error.status === 404) return null
+    throw error
+  }
 }
 
 export async function fetchReadme(
@@ -214,4 +228,33 @@ export async function fetchWorkflowRuns(
     if (runs.length < 100) break
   }
   return all
+}
+
+const DEFAULT_DEPENDENCY_MANIFESTS = [
+  'package.json',
+  'requirements.txt',
+  'requirements-dev.txt',
+  'dev-requirements.txt',
+  'pyproject.toml',
+  'setup.cfg',
+  'setup.py',
+  'Pipfile',
+  'go.mod',
+  'Gemfile',
+  'composer.json',
+]
+
+export async function fetchDependencies(
+  client: GitHubClient,
+  owner: string,
+  repo: string,
+  branch: string,
+  paths: string[] = DEFAULT_DEPENDENCY_MANIFESTS,
+): Promise<ParseResult> {
+  const configFiles: Record<string, string> = {}
+  for (const path of paths) {
+    const content = await readFileText(client, owner, repo, path, branch)
+    if (content !== null) configFiles[path] = content
+  }
+  return parseDependencies(configFiles)
 }
