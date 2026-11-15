@@ -2,12 +2,10 @@ node_modules/
 dist/
 coverage/
 .env
-.env.local
-.env.test
-.env.*.local
-*.log
+.env.*
+!.env.example
+.repositron/
 *.rdb
-*.tsbuildinfo
+*.log
 .DS_Store
-.vscode/
-.idea/
+PROMPT.md
