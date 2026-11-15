@@ -48,6 +48,11 @@ export function RepoPicker({ client, username, onSelect }: RepoPickerProps) {
 
   useInput(
     (input) => {
+      if (input === '/') {
+        setQuery('')
+        setFocus('search')
+        return
+      }
       if (input.length === 1 && input >= ' ') {
         setQuery(input)
         setFocus('search')
@@ -71,7 +76,7 @@ export function RepoPicker({ client, username, onSelect }: RepoPickerProps) {
     )
   }, [repos, query])
 
-  const items = filtered.slice(0, 50).map((repo) => ({
+  const items = filtered.map((repo) => ({
     key: repo.full_name,
     label: `${repo.full_name.padEnd(44)} ${String(repo.stargazers_count).padStart(
       6,
@@ -129,7 +134,6 @@ export function RepoPicker({ client, username, onSelect }: RepoPickerProps) {
               isFocused={focus === 'list'}
               limit={12}
               onSelect={(item) => onSelect(item.value)}
-              onHighlight={() => undefined}
             />
           )}
         </Box>
