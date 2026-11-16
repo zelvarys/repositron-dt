@@ -120,6 +120,31 @@ export class GitHubClient {
   get<T>(path: string): Promise<T> {
     return this.request<T>(path)
   }
+
+  async graphql<T>(
+    query: string,
+    variables: Record<string, unknown> = {},
+  ): Promise<T> {
+    const result = await this.request<{
+      data?: T
+      errors?: Array<{ message: string }>
+    }>('/graphql', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query, variables }),
+    })
+
+    if (result.errors && result.errors.length > 0) {
+      throw new GitHubApiError(
+        `GitHub GraphQL error: ${result.errors[0]!.message}`,
+        502,
+      )
+    }
+    if (!result.data) {
+      throw new GitHubApiError('GitHub GraphQL returned no data', 502)
+    }
+    return result.data
+  }
 }
 
 export async function getAuthenticatedUser(
