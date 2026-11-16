@@ -156,8 +156,8 @@ After parsing, `collectDependencyHealth()` enriches up to 300 dependencies:
 
 - Latest versions come from the public npm, PyPI, Go proxy, RubyGems, and
   Packagist registries.
-- A dependency is outdated when a newer stable version compares greater than the
-  declared version using semantic-version ordering.
+- A dependency is outdated only when the latest stable version is at least one
+  major version ahead of the declared version.
 - Lookups run with a concurrency of 8, a 10 second timeout per request, and an
   in-process cache keyed by package and version.
 

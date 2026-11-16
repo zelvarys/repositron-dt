@@ -158,7 +158,7 @@ export function RepoPicker({ client, username, onSelect }: RepoPickerProps) {
           <Box justifyContent="space-between">
             <Text bold>Repositories</Text>
             <Text color="white">
-              {focus === 'list' ? 'arrow keys to move' : 'enter to focus list'}
+              {focus === 'list' ? 'Press arrow keys to move' : 'Press Enter to focus list'}
             </Text>
           </Box>
 
@@ -227,10 +227,9 @@ export function RepoPicker({ client, username, onSelect }: RepoPickerProps) {
 
         <Box marginTop={1} paddingX={1} justifyContent="space-between">
           <Text color="white">
-            {filtered.length} match{filtered.length === 1 ? '' : 'es'}  |  Press Esc
-            to leave search
+            {filtered.length} match{filtered.length === 1 ? '' : 'es'}  |  Press Esc leaves search
           </Text>
-          <Text color="white">Press Enter to scan  |  Press Ctrl+C to exit</Text>
+          <Text color="white">Press Enter to scan  |  Ctrl+C exits</Text>
         </Box>
       </Box>
     </Box>

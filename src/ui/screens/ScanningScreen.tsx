@@ -17,7 +17,7 @@ const PHASES = [
   { match: 'configuration files', label: 'Configuration files' },
   { match: 'workflow definitions', label: 'Workflow definitions' },
   { match: 'workflow runs', label: 'Workflow history' },
-  { match: 'dependency versions', label: 'Dependency intelligence' },
+  { match: 'dependency versions', label: 'Dependency versions' },
   { match: 'Calculating insights', label: 'Insight engine' },
 ] as const
 

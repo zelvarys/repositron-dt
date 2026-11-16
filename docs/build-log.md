@@ -21,7 +21,7 @@ Added Vitest coverage for tool adoption, bus factor and Gini math, activity
 buckets and commit quality, CI aggregation, and dependency parsing. The suite
 passes locally with type checking and a production build.
 
-## 2026-11-16 - Repository filtering, dependency intelligence, UI refresh
+## 2026-11-16 - Repository filtering, dependency review, UI refresh
 
 - Limited the picker to owned repositories and repositories with commits or
   merged pull requests in the last 12 months.

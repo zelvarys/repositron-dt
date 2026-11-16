@@ -54,14 +54,14 @@ user config directory, protected by your operating system account permissions.
 
 ```text
 +------------------------------------------------------------------------------+
-| [>_] REPOSITRON  repository intelligence                          @octocat   |
+| [>_] REPOSITRON                                                               |
 +------------------------------------------------------------------------------+
 | FIND A REPOSITORY                                42 owned or contributed    |
 | +--------------------------------------------------------------------------+ |
 | | > Search repositories                                                    | |
 | +--------------------------------------------------------------------------+ |
 | +--------------------------------------------------------------------------+ |
-| | Repositories                                      arrow keys to move     | |
+| | Repositories                                Press arrow keys to move     | |
 | | ▸ octocat/widget                     1234 stars  TypeScript              | |
 | |   octocat/api                         210 stars  Go                      | |
 | |   octocat/notes                        18 stars  Python                  | |
@@ -72,7 +72,7 @@ user config directory, protected by your operating system account permissions.
 | | branch main  ★ 1.2k  forks 84                         updated 2d ago      | |
 | +--------------------------------------------------------------------------+ |
 +------------------------------------------------------------------------------+
-| 42 matches  |  Esc leaves search                     Enter scans  | Ctrl+C exits |
+| 42 matches  |  Press Esc leaves search   Press Enter to scan  |  Ctrl+C exits |
 +------------------------------------------------------------------------------+
 ```
 
@@ -80,8 +80,8 @@ user config directory, protected by your operating system account permissions.
 
 ```text
 +------------------------------------------------------------------------------+
-| [>_] REPOSITRON  repository intelligence                   OVERVIEW @octocat |
-| octocat/widget                                                     ★ 1234    |
+| [>_] REPOSITRON                                                      OVERVIEW |
+| github.com/octocat/widget                              1234 stars  TypeScript |
 +------------------------------------------------------------------------------+
 | [ 1 Overview ]  2 Tools   3 Activity   4 Dependencies   5 CI                 |
 | +--------------------------------------------------------------------------+ |
@@ -101,7 +101,7 @@ user config directory, protected by your operating system account permissions.
 | | 7 outdated  |  46 checked       |  | Gini 0.41  |  top 3 71%             | |
 | +---------------------------------+  +-------------------------------------+ |
 +------------------------------------------------------------------------------+
-| 1-5 switch view  |  q/Esc repos  |  Ctrl+C exit          2026-11-16 01:42:11 |
+| Press 1-5: tabs  |  Press q/Esc: repos  |  Ctrl+C exits   2026-11-16 01:42:11 |
 +------------------------------------------------------------------------------+
 ```
 

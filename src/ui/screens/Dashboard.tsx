@@ -79,7 +79,7 @@ export function Dashboard({ result, onBack }: DashboardProps) {
       </Box>
 
       <Box marginTop={1} paddingX={1} justifyContent="space-between">
-        <Text color="white">Press 1-5 for tabs  |  Press q/Esc for repos  |  Ctrl+C exits</Text>
+        <Text color="white">Press 1-5: tabs  |  Press q/Esc: repos  |  Ctrl+C exits</Text>
         <Text color="white">{result.report.scannedAt.slice(0, 19).replace('T', ' ')}</Text>
       </Box>
     </Box>
