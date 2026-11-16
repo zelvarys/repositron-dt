@@ -25,8 +25,16 @@ passes locally with type checking and a production build.
 
 - Limited the picker to owned repositories and repositories with commits or
   merged pull requests in the last 12 months.
-- Added registry latest-version lookups, semver comparison, and OSV advisory
-  aggregation to the dependency report.
-- Rebuilt the UI around a shared theme, stat cards, sparklines, badges, a staged
-  scanning checklist, and interactive dependency filtering.
+- Added registry latest-version lookups and semver comparison to the dependency
+  report.
+- Rebuilt the UI around a shared theme, stat cards, badges, a staged scanning
+  checklist, and interactive dependency filtering.
 - Added `REPOSITRON_ASCII=1` as a glyph fallback.
+
+## 2026-11-16 - Readability and density review
+
+- Replaced dark grey secondary text with white so it remains visible on dark
+  terminals.
+- Switched block meters to thin one-line bars and removed activity sparklines in
+  favor of compact text statistics.
+- Removed OSV advisory lookups and advisory UI from the dependency report.

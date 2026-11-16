@@ -100,7 +100,7 @@ user config directory, protected by your operating system account permissions.
 | | DEPENDENCIES                    |  | CONTRIBUTOR CONCENTRATION           | |
 | | 46 direct                       |  | 38.2% top 1                         | |
 | | 46 checked                      |  | Gini 0.41  |  top 3 71%             | |
-| | 7 outdated   2 advisories       |  | ● MODERATE RISK                     | |
+| | 7 outdated  |  46 checked     |  | ● MODERATE RISK                     | |
 | +---------------------------------+  +-------------------------------------+ |
 +------------------------------------------------------------------------------+
 | 1-5 switch view  |  q/Esc repos  |  Ctrl+C exit          2026-11-16 01:42:11 |
@@ -116,7 +116,7 @@ user config directory, protected by your operating system account permissions.
 | Repository picker | Enter | Scan selected repository |
 | Repository picker | Esc | Leave the search field |
 | Dashboard | `1`-`5` | Switch tabs |
-| Dependencies tab | `f` | Cycle all / outdated / advisories |
+| Dependencies tab | `f` | Cycle all / outdated |
 | Dependencies tab | Left / Right | Page through rows |
 | Dashboard | `q` / Esc | Return to the repository picker |
 | Any screen | Ctrl+C | Exit |
@@ -134,22 +134,21 @@ user config directory, protected by your operating system account permissions.
 - Direct dependencies parsed from local manifests such as `package.json`,
   `requirements.txt`, `pyproject.toml`, `go.mod`, `Gemfile`, and
   `composer.json`.
-- Latest versions from npm, PyPI, the Go module proxy, RubyGems, and Packagist,
-  plus OSV advisories with severity counts.
+- Latest versions from npm, PyPI, the Go module proxy, RubyGems, and Packagist.
 
 Scans are intentionally bounded to keep the CLI responsive: the 30 most recent
 commit diffs, up to 500 commits, up to 200 contributors, up to 300 workflow
-runs, and up to 300 parsed dependencies. Registry and OSV lookups run eight at a
-time with a 10 second timeout per request. See
+runs, and up to 300 parsed dependencies. Registry lookups run eight at a time
+with a 10 second timeout per request. See
 [docs/insights.md](docs/insights.md) for the metric definitions and their
 limitations.
 
 ## Terminal rendering
 
-The UI uses ANSI colors, rounded borders, block meters, sparklines, and
-Unicode glyphs. It does not print emojis. Set `REPOSITRON_ASCII=1` to swap
-blocks, sparklines, and marker glyphs for ASCII equivalents on limited
-terminals.
+The UI uses ANSI colors, rounded borders, thin meters, and Unicode glyphs. It
+does not print emojis. Secondary text is rendered in white rather than dark
+grey so it stays readable on dark terminals. Set `REPOSITRON_ASCII=1` to swap
+meters and marker glyphs for ASCII equivalents on limited terminals.
 
 ## Install from source
 

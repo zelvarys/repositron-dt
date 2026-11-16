@@ -2,9 +2,9 @@
 
 Most insight code is synchronous and in-memory: it receives a `ScanContext`
 built by `src/scan.ts`, then runs detectors and aggregates. Dependency checks are
-the exception; they query package registries and OSV after the manifests are
-parsed. This document describes the detectors, aggregates, formulas, and the
-places where the numbers are approximations.
+the exception; they query package registries after the manifests are parsed.
+This document describes the detectors, aggregates, formulas, and the places
+where the numbers are approximations.
 
 ## Tool adoption
 
@@ -112,9 +112,9 @@ commits and empty messages:
   and `@mentions` become `@user`.
 - First-line length buckets: 0-20, 21-40, 41-60, 61-80, and 81+ characters.
 
-The Activity tab summarizes the last 12 weeks as a sparkline and lists the top
-contributors with inline adoption bars. `REPOSITRON_ASCII=1` switches the
-glyphs to an ASCII fallback.
+The Activity tab summarizes the last 12 weeks and weekday distribution as
+compact text statistics, then lists the top contributors with commit shares.
+`REPOSITRON_ASCII=1` switches meter glyphs to an ASCII fallback.
 
 ## CI health
 
@@ -158,17 +158,13 @@ After parsing, `collectDependencyHealth()` enriches up to 300 dependencies:
   Packagist registries.
 - A dependency is outdated when a newer stable version compares greater than the
   declared version using semantic-version ordering.
-- OSV's query batch API is queried for advisories, and severity comes from
-  `database_specific.severity` when present. Critical, high, moderate, and low
-  counts are aggregated per repository.
 - Lookups run with a concurrency of 8, a 10 second timeout per request, and an
   in-process cache keyed by package and version.
 
-Floating versions such as `*` are counted but not sent to a registry or OSV. A
-failed registry lookup, failed OSV request, truncated manifest list, or malformed
-manifest sets `partial` to `true`. The Dependencies tab separates all, outdated,
-and advisory rows, shows current and latest versions, and pages through the
-result set.
+Floating versions such as `*` are counted but not sent to a registry. A failed
+registry lookup, truncated manifest list, or malformed manifest sets `partial`
+to `true`. The Dependencies tab separates all and outdated rows, shows current
+and latest versions, and pages through the result set.
 
 ## Repository health
 
@@ -195,6 +191,6 @@ score as `n/a` rather than zero.
 - Activity and bus factor use up to 500 commits from the GitHub commits API.
 - Timestamps are handled in UTC, so local-time weekday and hour charts may differ
   from a contributor's wall clock.
-- Pull requests, issues, and releases are not scanned. Advisories cover only parsed direct dependencies with concrete versions.
+- Pull requests, issues, releases, and security advisories are not scanned.
 - Private repositories depend on the token scopes and GitHub API rate limits.
 - No repository data is persisted. Every scan uses fresh GitHub requests; dependency registry lookups use an in-process cache for the lifetime of the CLI.

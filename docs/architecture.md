@@ -80,11 +80,11 @@ picker <- error
 between its text field and `ink-select-input`: typing a letter moves focus to the
 search field, Enter or Esc returns to the list. No screen prints emojis. Status is
 expressed with terminal glyphs such as `[x]`, `[>]`, `[ ]`, percent bars, and
-score-colored borders. `REPOSITRON_ASCII=1` switches the block, sparkline, and
-marker glyphs to ASCII equivalents.
+score-colored borders. `REPOSITRON_ASCII=1` switches the meter and marker
+glyphs to ASCII equivalents.
 
-The Header, StatusMessage, ProgressBar, StatCard, Badge, and Sparkline
-components are shared across screens. Ink handles layout, borders, and live
+The Header, StatusMessage, ProgressBar, StatCard, and Badge components are
+shared across screens. Ink handles layout, borders, and live
 rendering; the theme module maps scores and severities to terminal colors.
 
 ## Scan pipeline
@@ -97,8 +97,8 @@ rendering; the theme module maps scores and severities to terminal colors.
 4. Fetch known root config files from `CONFIG_FILE_CANDIDATES` and
    `CONFIG_SUBDIR_CANDIDATES`.
 5. Fetch `.github/workflows`, read each workflow file, and fetch workflow runs.
-6. Build a `ScanContext`, parse dependency manifests, and query registries and
-   OSV for latest versions and advisories.
+6. Build a `ScanContext`, parse dependency manifests, and query registries for
+   latest versions.
 7. Run the detectors and aggregators, then return `{ repo, context, report }`.
 
 Hard limits keep the scan bounded:
@@ -113,7 +113,7 @@ Hard limits keep the scan bounded:
 | Activity history | 365 days |
 | Parsed dependencies | 300 |
 | Dependency lookup concurrency | 8 |
-| Registry and OSV timeout | 10 seconds each |
+| Registry timeout | 10 seconds per request |
 
 `src/github/client.ts` adds the token, GitHub API version header, a 20 second
 timeout, and typed errors for authentication, rate limits, and timeouts.
@@ -133,9 +133,9 @@ and returns plain objects. Dependency health is the network-backed exception.
   aggregates.
 - `ci.ts` aggregates workflow runs and filters by workflow, branch, and time.
 - `dependencies.ts` parses manifests locally.
-- `dependency-check.ts` orchestrates bounded, concurrent registry and OSV lookups;
-  `dependency-registry.ts`, `semver.ts`, and `osv.ts` implement the lookups and
-  version comparisons.
+- `dependency-check.ts` orchestrates bounded, concurrent registry lookups;
+  `dependency-registry.ts` and `semver.ts` implement the lookups and version
+  comparisons.
 - `health.ts` combines activity, CI, contributor spread, and commit quality into
   a weighted score when the underlying data is available.
 

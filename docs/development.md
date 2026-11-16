@@ -83,7 +83,7 @@ the pure logic:
 - `tests/activity.test.ts`: weekly buckets, range selection, and commit quality.
 - `tests/ci.test.ts`: workflow aggregation and filtering.
 - `tests/dependencies.test.ts`: manifest parsing and summaries.
-- `tests/dependency-check.test.ts`: outdated detection, advisory aggregation,
+- `tests/dependency-check.test.ts`: latest-version lookups, outdated detection,
   and partial registry behavior.
 - `tests/repos.test.ts`: owned versus contributed repository filtering and
   pagination helpers.
