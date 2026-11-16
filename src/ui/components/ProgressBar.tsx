@@ -1,35 +1,34 @@
 import { Text } from 'ink'
+import { glyphs } from '../glyphs.js'
+import { scoreColor, type Tone } from '../theme.js'
 
 type ProgressBarProps = {
   value: number
   width?: number
   showPercent?: boolean
-  color?: 'green' | 'yellow' | 'red' | 'cyan' | 'gray'
+  color?: Tone
 }
 
 export function ProgressBar({
   value,
   width = 20,
   showPercent = true,
-  color = 'cyan',
+  color,
 }: ProgressBarProps) {
   const clamped = Math.max(0, Math.min(100, value))
   const filled = Math.round((clamped / 100) * width)
-  const bar = `${'#'.repeat(filled)}${'-'.repeat(width - filled)}`
+  const tone = color ?? scoreColor(clamped)
   return (
     <Text>
-      <Text color={color}>[</Text>
-      <Text color={color}>{bar}</Text>
-      <Text color={color}>]</Text>
-      {showPercent ? <Text> {clamped.toFixed(0)}%</Text> : null}
+      <Text color={tone}>{glyphs.filled.repeat(filled)}</Text>
+      <Text color="gray">{glyphs.empty.repeat(width - filled)}</Text>
+      {showPercent ? (
+        <Text color="gray"> {clamped.toFixed(0).padStart(3)}%</Text>
+      ) : null}
     </Text>
   )
 }
 
-export function progressColor(
-  value: number,
-): 'green' | 'yellow' | 'red' {
-  if (value >= 75) return 'green'
-  if (value >= 40) return 'yellow'
-  return 'red'
+export function progressColor(value: number): Tone {
+  return scoreColor(value)
 }
