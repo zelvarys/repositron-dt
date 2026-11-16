@@ -27,7 +27,7 @@ export function ToolsTab({ report }: ToolsTabProps) {
     <Box flexDirection="column">
       <Box justifyContent="space-between">
         <Box flexDirection="column">
-          <Text bold color="cyan">
+          <Text bold color="blue">
             TOOL ADOPTION
           </Text>
           <Text color="white">

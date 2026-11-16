@@ -43,7 +43,7 @@ export function ActivityTab({ report }: ActivityTabProps) {
           title="Last 30 days"
           value={`${report.activity.commitsLast30} commits`}
           detail={`${report.contributorCount} contributors`}
-          tone="cyan"
+          tone="blue"
         />
         <Box width={1} />
         <StatCard
@@ -63,13 +63,13 @@ export function ActivityTab({ report }: ActivityTabProps) {
 
       <Box flexDirection="column" marginTop={1}>
         <Box justifyContent="space-between">
-          <Text bold color="cyan">
+          <Text bold color="blue">
             WEEKLY RHYTHM
           </Text>
           <Text color="white">last 12 weeks</Text>
         </Box>
         <Text>
-          <Text bold color="cyan">
+          <Text bold color="blue">
             {totalWeekly}
           </Text>
           <Text color="white"> commits</Text>
@@ -82,7 +82,7 @@ export function ActivityTab({ report }: ActivityTabProps) {
 
       <Box marginTop={1}>
         <Box flexDirection="column" flexGrow={1}>
-          <Text bold color="cyan">
+          <Text bold color="blue">
             TOP CONTRIBUTORS
           </Text>
           {topContributors.length === 0 ? (
@@ -98,7 +98,7 @@ export function ActivityTab({ report }: ActivityTabProps) {
                     {String(contributor.commits).padStart(4)} commits
                   </Text>
                 </Box>
-                <Text color="cyan">
+                <Text color="blue">
                   {' '}
                   {percent(
                     weekdayTotal > 0
@@ -113,7 +113,7 @@ export function ActivityTab({ report }: ActivityTabProps) {
         </Box>
         <Box width={2} />
         <Box flexDirection="column" flexGrow={1}>
-          <Text bold color="cyan">
+          <Text bold color="blue">
             WEEKDAY PULSE
           </Text>
           {weekdayLines.map((line) => (

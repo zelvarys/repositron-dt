@@ -43,14 +43,14 @@ export function ScanningScreen({ repo, message }: ScanningScreenProps) {
       <Header repo={repo ?? undefined} tab="scanning" />
       <Box
         borderStyle={border}
-        borderColor="cyan"
+        borderColor="blue"
         flexDirection="column"
         marginTop={1}
         paddingX={2}
         paddingY={1}
       >
         <Box justifyContent="space-between">
-          <Text bold color="cyan">
+          <Text bold color="blue">
             SCANNING {repo?.full_name ?? 'repository'}
           </Text>
           <Text color="white">{elapsed}s elapsed</Text>
@@ -59,7 +59,7 @@ export function ScanningScreen({ repo, message }: ScanningScreenProps) {
           <ProgressBar
             value={((phase + 1) / PHASES.length) * 100}
             width={36}
-            color="cyan"
+            color="blue"
           />
         </Box>
 
@@ -70,7 +70,7 @@ export function ScanningScreen({ repo, message }: ScanningScreenProps) {
             return (
               <Text
                 key={item.label}
-                color={done ? 'green' : active ? 'cyan' : 'white'}
+                color={done ? 'green' : active ? 'blue' : 'white'}
               >
                 {done ? '[x]' : active ? '[>]' : '[ ]'} {item.label}
                 {active ? <Text color="white">  {message}</Text> : null}

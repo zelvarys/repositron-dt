@@ -23,7 +23,7 @@ type Focus = 'list' | 'search'
 function Pointer({ isSelected = false }: { isSelected?: boolean }) {
   return (
     <Box marginRight={1}>
-      <Text color={isSelected ? 'cyan' : 'white'}>
+      <Text color={isSelected ? 'blue' : 'white'}>
         {isSelected ? glyphs.pointer : ' '}
       </Text>
     </Box>
@@ -119,7 +119,7 @@ export function RepoPicker({ client, username, onSelect }: RepoPickerProps) {
       <Header />
       <Box marginTop={1} flexDirection="column">
         <Box justifyContent="space-between" paddingX={1}>
-          <Text bold color="cyan">
+          <Text bold color="blue">
             FIND A REPOSITORY
           </Text>
           <Text color="white">
@@ -129,11 +129,11 @@ export function RepoPicker({ client, username, onSelect }: RepoPickerProps) {
 
         <Box
           borderStyle={border}
-          borderColor={focus === 'search' ? 'cyan' : 'white'}
+          borderColor={focus === 'search' ? 'blue' : 'white'}
           marginTop={1}
           paddingX={1}
         >
-          <Text color="cyan">{'> '}</Text>
+          <Text color="blue">{'> '}</Text>
           {focus === 'search' ? (
             <TextInput
               value={query}
@@ -150,7 +150,7 @@ export function RepoPicker({ client, username, onSelect }: RepoPickerProps) {
 
         <Box
           borderStyle={border}
-          borderColor={focus === 'list' ? 'cyan' : 'white'}
+          borderColor={focus === 'list' ? 'blue' : 'white'}
           flexDirection="column"
           marginTop={1}
           paddingX={1}
@@ -201,7 +201,7 @@ export function RepoPicker({ client, username, onSelect }: RepoPickerProps) {
             paddingX={1}
           >
             <Box justifyContent="space-between">
-              <Text bold color="cyan">
+              <Text bold color="blue">
                 {highlighted.full_name}
               </Text>
               <Badge

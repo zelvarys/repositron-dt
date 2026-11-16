@@ -23,7 +23,7 @@ export function CiTab({ report }: CiTabProps) {
   if (!ci) {
     return (
       <Box flexDirection="column">
-        <Text bold color="cyan">
+        <Text bold color="blue">
           CI HEALTH
         </Text>
         <Text color="white">No GitHub Actions workflows found.</Text>
@@ -55,7 +55,7 @@ export function CiTab({ report }: CiTabProps) {
           title="Workflows"
           value={String(ci.workflows.length)}
           detail="tracked workflows"
-          tone="cyan"
+          tone="blue"
         />
         <Box width={1} />
         <StatCard
@@ -73,7 +73,7 @@ export function CiTab({ report }: CiTabProps) {
       </Box>
 
       <Box marginTop={1} flexDirection="column">
-        <Text bold color="cyan">
+        <Text bold color="blue">
           WORKFLOWS
         </Text>
         <Text color="white">
@@ -111,7 +111,7 @@ export function CiTab({ report }: CiTabProps) {
       </Box>
 
       <Box marginTop={1} flexDirection="column">
-        <Text bold color="cyan">
+        <Text bold color="blue">
           RECENT FAILURES
         </Text>
         {ci.recentFailures.length === 0 ? (

@@ -1,4 +1,4 @@
-export type Tone = 'green' | 'yellow' | 'red' | 'cyan' | 'white' | 'magenta' | 'gray'
+export type Tone = 'green' | 'yellow' | 'red' | 'blue' | 'white'
 
 export const border = 'round' as const
 

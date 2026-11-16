@@ -14,7 +14,7 @@ export function StatCard({
   title,
   value,
   detail,
-  tone = 'cyan',
+  tone = 'blue',
   children,
 }: StatCardProps) {
   return (

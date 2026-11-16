@@ -17,12 +17,12 @@ export function Header({ repo, languages, tab }: HeaderProps) {
   return (
     <Box
       borderStyle={border}
-      borderColor="cyan"
+      borderColor="blue"
       flexDirection="column"
       paddingX={1}
     >
       <Box justifyContent="space-between">
-        <Text bold color="cyan">
+        <Text bold color="blue">
           {'[>_]'} REPOSITRON
         </Text>
         <Text color="white">{tab ? tab.toUpperCase() : ' '}</Text>

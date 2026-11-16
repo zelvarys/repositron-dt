@@ -69,7 +69,7 @@ export function DependenciesTab({ report }: DependenciesTabProps) {
     <Box flexDirection="column">
       <Box justifyContent="space-between">
         <Box flexDirection="column">
-          <Text bold color="cyan">
+          <Text bold color="blue">
             DEPENDENCY REPORT
           </Text>
           <Text color="white">
@@ -115,8 +115,8 @@ export function DependenciesTab({ report }: DependenciesTabProps) {
           return (
             <Box key={item.key} marginRight={1}>
               <Text
-                color={active ? 'black' : 'white'}
-                backgroundColor={active ? 'cyan' : undefined}
+                color="white"
+                backgroundColor={active ? 'blue' : undefined}
                 bold={active}
               >
                 {' '}

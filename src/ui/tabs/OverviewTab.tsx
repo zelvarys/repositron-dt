@@ -62,7 +62,7 @@ export function OverviewTab({ report }: OverviewTabProps) {
           title="Commit activity"
           value={`${report.activity.commitsLast30} commits / 30d`}
           detail={`${report.contributorCount} contributors  |  ${percent(bus.top1Share)} top 1`}
-          tone="cyan"
+          tone="blue"
         />
         <Box width={1} />
         <StatCard

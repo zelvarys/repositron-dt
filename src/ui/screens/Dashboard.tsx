@@ -52,8 +52,8 @@ export function Dashboard({ result, onBack }: DashboardProps) {
           return (
             <Box key={item.key} marginRight={1}>
               <Text
-                color={isActive ? 'black' : 'white'}
-                backgroundColor={isActive ? 'cyan' : undefined}
+                color="white"
+                backgroundColor={isActive ? 'blue' : undefined}
                 bold={isActive}
               >
                 {' '}
@@ -66,7 +66,7 @@ export function Dashboard({ result, onBack }: DashboardProps) {
 
       <Box
         borderStyle={border}
-        borderColor={active === 3 ? 'magenta' : 'cyan'}
+        borderColor="blue"
         flexDirection="column"
         marginTop={1}
         paddingX={2}
