@@ -170,16 +170,19 @@ export function DependenciesTab({ report }: DependenciesTabProps) {
         )}
       </Box>
 
-      <Box marginTop={1} justifyContent="space-between">
-        <Text color="white">
-          {filtered.length} row{filtered.length === 1 ? '' : 's'}  |  page{' '}
-          {safePage + 1}/{totalPages}  |  Press left/right arrows to change page
-        </Text>
-        {dependencies.partial ? (
-          <Badge label="partial registry data" tone="yellow" />
-        ) : (
-          <Text color="green">{glyphs.dot} registry lookups complete</Text>
-        )}
+      <Box marginTop={1} flexDirection="column">
+        <Box justifyContent="space-between">
+          <Text color="white">
+            {filtered.length} row{filtered.length === 1 ? '' : 's'}  |  page{' '}
+            {safePage + 1}/{totalPages}
+          </Text>
+          {dependencies.partial ? (
+            <Badge label="partial registry data" tone="yellow" />
+          ) : (
+            <Text color="green">{glyphs.dot} registry lookups complete</Text>
+          )}
+        </Box>
+        <Text color="white">Press left/right arrows to change page</Text>
       </Box>
     </Box>
   )
