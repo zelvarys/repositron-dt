@@ -6,13 +6,14 @@ import { border } from '../theme.js'
 type HeaderProps = {
   repo?: GitHubRepo
   languages?: string[]
-  username?: string
   tab?: string
 }
 
-export function Header({ repo, languages, username, tab }: HeaderProps) {
+export function Header({ repo, languages, tab }: HeaderProps) {
   const languageText =
     languages && languages.length > 0 ? languages.join(' / ') : 'unknown'
+  const url = repo ? `https://github.com/${repo.full_name}` : null
+
   return (
     <Box
       borderStyle={border}
@@ -21,23 +22,15 @@ export function Header({ repo, languages, username, tab }: HeaderProps) {
       paddingX={1}
     >
       <Box justifyContent="space-between">
-        <Text>
-          <Text bold color="cyan">
-            {'[>_]'} REPOSITRON
-          </Text>
-          <Text color="white">  repository intelligence</Text>
+        <Text bold color="cyan">
+          {'[>_]'} REPOSITRON
         </Text>
-        <Text color="white">
-          {tab ? `${tab.toUpperCase()}  ` : ''}
-          {username ? `@${username}` : 'local'}
-        </Text>
+        <Text color="white">{tab ? tab.toUpperCase() : ' '}</Text>
       </Box>
-      {repo ? (
+      {repo && url ? (
         <Box justifyContent="space-between">
           <Text>
-            <Link url={`https://github.com/${repo.full_name}`}>
-              {repo.full_name}
-            </Link>
+            <Link url={url}>{`github.com/${repo.full_name}`}</Link>
             {repo.private ? <Text color="yellow">  private</Text> : null}
           </Text>
           <Text color="white">

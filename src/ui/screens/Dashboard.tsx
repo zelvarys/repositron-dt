@@ -11,7 +11,6 @@ import { CiTab } from '../tabs/CiTab.js'
 
 type DashboardProps = {
   result: ScanResult
-  username: string
   onBack: () => void
 }
 
@@ -25,7 +24,7 @@ const TABS = [
 
 type TabIndex = 0 | 1 | 2 | 3 | 4
 
-export function Dashboard({ result, username, onBack }: DashboardProps) {
+export function Dashboard({ result, onBack }: DashboardProps) {
   const [active, setActive] = useState<TabIndex>(0)
   const tab = TABS[active]!
 
@@ -44,7 +43,6 @@ export function Dashboard({ result, username, onBack }: DashboardProps) {
       <Header
         repo={result.repo}
         languages={result.report.metrics.languages}
-        username={username}
         tab={tab.label}
       />
 

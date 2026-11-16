@@ -85,17 +85,13 @@ export function App({ token, username }: AppProps) {
 
   if (view === 'scanning') {
     return (
-      <ScanningScreen
-        repo={scanningRepo}
-        username={username}
-        message={scanMessage}
-      />
+      <ScanningScreen repo={scanningRepo} message={scanMessage} />
     )
   }
 
   if (view === 'dashboard' && result) {
     return (
-      <Dashboard result={result} username={username} onBack={backToPicker} />
+      <Dashboard result={result} onBack={backToPicker} />
     )
   }
 

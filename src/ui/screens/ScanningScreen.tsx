@@ -8,7 +8,6 @@ import { ProgressBar } from '../components/ProgressBar.js'
 
 type ScanningScreenProps = {
   repo: GitHubRepo | null
-  username: string
   message: string
 }
 
@@ -27,11 +26,7 @@ function currentPhase(message: string): number {
   return index === -1 ? 0 : index
 }
 
-export function ScanningScreen({
-  repo,
-  username,
-  message,
-}: ScanningScreenProps) {
+export function ScanningScreen({ repo, message }: ScanningScreenProps) {
   const [elapsed, setElapsed] = useState(0)
   const phase = currentPhase(message)
 
@@ -45,7 +40,7 @@ export function ScanningScreen({
 
   return (
     <Box flexDirection="column">
-      <Header repo={repo ?? undefined} username={username} tab="scanning" />
+      <Header repo={repo ?? undefined} tab="scanning" />
       <Box
         borderStyle={border}
         borderColor="cyan"

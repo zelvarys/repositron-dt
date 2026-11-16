@@ -116,7 +116,7 @@ export function RepoPicker({ client, username, onSelect }: RepoPickerProps) {
 
   return (
     <Box flexDirection="column">
-      <Header username={username} />
+      <Header />
       <Box marginTop={1} flexDirection="column">
         <Box justifyContent="space-between" paddingX={1}>
           <Text bold color="cyan">
