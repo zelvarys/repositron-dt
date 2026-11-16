@@ -20,10 +20,13 @@ describe('semver', () => {
     expect(compareVersions('1.0.0-beta.1', '1.0.0')).toBeLessThan(0)
   })
 
-  it('marks any newer version as outdated', () => {
-    expect(isOutdated('1.2.0', '1.2.1')).toBe(true)
-    expect(isOutdated('1.2.0', '1.2.0')).toBe(false)
-    expect(isOutdated('1.2.0', null)).toBe(false)
+  it('marks only major version bumps as outdated', () => {
+    expect(isOutdated('1.2.0', '1.2.1')).toBe(false)
+    expect(isOutdated('1.2.0', '1.9.0')).toBe(false)
+    expect(isOutdated('1.2.0', '2.0.0')).toBe(true)
+    expect(isOutdated('0.9.0', '1.0.0')).toBe(true)
+    expect(isOutdated('2.0.0', '3.1.4')).toBe(true)
+    expect(isOutdated('2.0.0', null)).toBe(false)
   })
 })
 
@@ -62,7 +65,7 @@ describe('checkDependencies', () => {
     })
 
     expect(report.checked).toBe(4)
-    expect(report.outdated).toBe(2)
+    expect(report.outdated).toBe(1)
     expect(report.partial).toBe(false)
     expect(report.rows.find((row) => row.name === 'react-check')).toMatchObject({
       latestVersion: '19.0.0',
