@@ -2,9 +2,7 @@ import { Box, Text } from 'ink'
 import type { RepositoryReport } from '../../insights/types.js'
 import { recentWeeks } from '../../insights/activity.js'
 import { dayLabel, percent } from '../format.js'
-import { glyphs } from '../glyphs.js'
 import { riskColor, riskLabel } from '../theme.js'
-import { Sparkline } from '../components/Sparkline.js'
 import { StatCard } from '../components/StatCard.js'
 
 type ActivityTabProps = {
@@ -12,6 +10,7 @@ type ActivityTabProps = {
 }
 
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+const MONDAY_FIRST = [1, 2, 3, 4, 5, 6, 0]
 
 export function ActivityTab({ report }: ActivityTabProps) {
   const activity = report.activity.ranges[90]
@@ -21,10 +20,16 @@ export function ActivityTab({ report }: ActivityTabProps) {
     new Date(report.scannedAt),
   )
   const topContributors = activity.topContributors.slice(0, 5)
-  const largestContributor = Math.max(
-    1,
-    ...topContributors.map((contributor) => contributor.commits),
+  const totalWeekly = weeks.reduce((sum, week) => sum + week.count, 0)
+  const averageWeekly = (totalWeekly / weeks.length).toFixed(1)
+  const busiest = weeks.reduce(
+    (best, week) => (week.count > best.count ? week : best),
+    weeks[0]!,
   )
+  const weekdayTotal = activity.weekday.reduce((sum, value) => sum + value, 0)
+  const weekdayCells = MONDAY_FIRST.map((day) =>
+    `${WEEKDAYS[day]![0]}${String(activity.weekday[day] ?? 0).padStart(2)}`,
+  ).join(' ')
 
   return (
     <Box flexDirection="column">
@@ -58,21 +63,16 @@ export function ActivityTab({ report }: ActivityTabProps) {
           </Text>
           <Text color="white">last 12 weeks</Text>
         </Box>
-        <Box>
-          <Sparkline values={weeks.map((week) => week.count)} color="cyan" />
-          <Text color="white">
-            {' '}
-            {weeks.reduce((sum, week) => sum + week.count, 0)} commits
+        <Text>
+          <Text bold color="cyan">
+            {totalWeekly}
           </Text>
-        </Box>
-        <Box justifyContent="space-between">
-          <Text color="white">{dayLabel(weeks[0]!.weekStart)}</Text>
+          <Text color="white"> commits</Text>
+          <Text color="white">{`  |  ${averageWeekly}/week  |  busiest `}</Text>
           <Text color="white">
-            busiest {dayLabel(weeks.reduce((best, week) => (week.count > best.count ? week : best), weeks[0]!).weekStart)} with{' '}
-            {Math.max(...weeks.map((week) => week.count))}
+            {dayLabel(busiest.weekStart)} ({busiest.count})
           </Text>
-          <Text color="white">{dayLabel(weeks[weeks.length - 1]!.weekStart)}</Text>
-        </Box>
+        </Text>
       </Box>
 
       <Box marginTop={1}>
@@ -85,8 +85,8 @@ export function ActivityTab({ report }: ActivityTabProps) {
           ) : (
             topContributors.map((contributor) => (
               <Box key={contributor.login}>
-                <Box width={20}>
-                  <Text>{contributor.login.slice(0, 19)}</Text>
+                <Box width={18}>
+                  <Text>{contributor.login.slice(0, 17)}</Text>
                 </Box>
                 <Box width={12}>
                   <Text color="white">
@@ -94,9 +94,11 @@ export function ActivityTab({ report }: ActivityTabProps) {
                   </Text>
                 </Box>
                 <Text color="cyan">
-                  {' '}
-                  {glyphs.filled.repeat(
-                    Math.max(1, Math.round((contributor.commits / largestContributor) * 8)),
+                  {percent(
+                    weekdayTotal > 0
+                      ? (contributor.commits / weekdayTotal) * 100
+                      : 0,
+                    0,
                   )}
                 </Text>
               </Box>
@@ -108,17 +110,9 @@ export function ActivityTab({ report }: ActivityTabProps) {
           <Text bold color="cyan">
             WEEKDAY PULSE
           </Text>
-          <Sparkline values={activity.weekday.slice(1).concat(activity.weekday[0]!)} color="magenta" />
-          <Box justifyContent="space-between">
-            {WEEKDAYS.map((day) => (
-              <Text key={day} color="white">
-                {day[0]}
-              </Text>
-            ))}
-          </Box>
+          <Text color="cyan">{weekdayCells}</Text>
           <Text color="white">
-            {activity.weekday.reduce((sum, value) => sum + value, 0)} commits
-            across the 90 day window
+            {weekdayTotal} commits across the 90 day window
           </Text>
         </Box>
       </Box>

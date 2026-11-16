@@ -4,7 +4,6 @@ export const glyphs = ascii
   ? {
       filled: '=',
       empty: '-',
-      spark: ['_', '.', ':', '-', '=', '+', '*', '#'],
       pointer: '>',
       dot: '*',
       star: '*',
@@ -15,7 +14,6 @@ export const glyphs = ascii
   : {
       filled: '━',
       empty: '─',
-      spark: ['▁', '▂', '▃', '▄', '▅', '▆', '▇', '█'],
       pointer: '▸',
       dot: '●',
       star: '★',
