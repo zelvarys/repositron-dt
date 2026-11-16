@@ -2,7 +2,7 @@ const ascii = process.env.REPOSITRON_ASCII === '1'
 
 export const glyphs = ascii
   ? {
-      filled: '#',
+      filled: '=',
       empty: '-',
       spark: ['_', '.', ':', '-', '=', '+', '*', '#'],
       pointer: '>',
@@ -13,8 +13,8 @@ export const glyphs = ascii
       downtick: 'v',
     }
   : {
-      filled: '█',
-      empty: '░',
+      filled: '━',
+      empty: '─',
       spark: ['▁', '▂', '▃', '▄', '▅', '▆', '▇', '█'],
       pointer: '▸',
       dot: '●',
