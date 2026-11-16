@@ -1,17 +1,18 @@
 import { useMemo, useState } from 'react'
 import { Box, Text, useInput } from 'ink'
-import Spinner from 'ink-spinner'
 import { GitHubClient } from '../github/client.js'
 import type { GitHubRepo } from '../github/repos.js'
 import { scanRepository, type ScanResult } from '../scan.js'
+import { border } from './theme.js'
 import { Header } from './components/Header.js'
 import { StatusMessage } from './components/StatusMessage.js'
 import { RepoPicker } from './screens/RepoPicker.js'
+import { ScanningScreen } from './screens/ScanningScreen.js'
 import { Dashboard } from './screens/Dashboard.js'
 
 type AppProps = {
   token: string
-  username?: string
+  username: string
 }
 
 type View = 'picker' | 'scanning' | 'dashboard' | 'error'
@@ -28,16 +29,17 @@ function ErrorScreen({ message, onBack }: ErrorScreenProps) {
 
   return (
     <Box flexDirection="column">
-      <Header />
+      <Header tab="error" />
       <Box
-        borderStyle="single"
+        borderStyle={border}
         borderColor="red"
         flexDirection="column"
-        paddingX={1}
+        marginTop={1}
+        paddingX={2}
         paddingY={1}
       >
         <Text bold color="red">
-          Scan failed
+          SCAN INTERRUPTED
         </Text>
         <StatusMessage tone="error">{message}</StatusMessage>
         <Box marginTop={1}>
@@ -83,28 +85,11 @@ export function App({ token, username }: AppProps) {
 
   if (view === 'scanning') {
     return (
-      <Box flexDirection="column">
-        <Header repo={scanningRepo ?? undefined} username={username} />
-        <Box
-          borderStyle="single"
-          borderColor="gray"
-          flexDirection="column"
-          paddingX={1}
-          paddingY={1}
-        >
-          <Text bold color="cyan">
-            Scanning {scanningRepo?.full_name ?? 'repository'}
-          </Text>
-          <Text>
-            <Spinner type="dots" /> {scanMessage}
-          </Text>
-          <Box marginTop={1}>
-            <Text color="gray">
-              Large repositories can take a minute. Ctrl+C exits.
-            </Text>
-          </Box>
-        </Box>
-      </Box>
+      <ScanningScreen
+        repo={scanningRepo}
+        username={username}
+        message={scanMessage}
+      />
     )
   }
 
@@ -116,10 +101,7 @@ export function App({ token, username }: AppProps) {
 
   if (view === 'error') {
     return (
-      <ErrorScreen
-        message={error ?? 'Unknown error'}
-        onBack={backToPicker}
-      />
+      <ErrorScreen message={error ?? 'Unknown error'} onBack={backToPicker} />
     )
   }
 

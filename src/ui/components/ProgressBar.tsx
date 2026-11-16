@@ -28,7 +28,3 @@ export function ProgressBar({
     </Text>
   )
 }
-
-export function progressColor(value: number): Tone {
-  return scoreColor(value)
-}

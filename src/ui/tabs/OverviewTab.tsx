@@ -1,143 +1,92 @@
 import { Box, Text } from 'ink'
 import type { RepositoryReport } from '../../insights/types.js'
-import { selectActivity } from '../../insights/activity.js'
-import { ProgressBar, progressColor } from '../components/ProgressBar.js'
-import { StatusMessage } from '../components/StatusMessage.js'
+import { compactNumber, percent } from '../format.js'
+import { riskColor, scoreColor } from '../theme.js'
+import { ProgressBar } from '../components/ProgressBar.js'
+import { StatCard } from '../components/StatCard.js'
 
 type OverviewTabProps = {
   report: RepositoryReport
 }
 
-function riskColor(
-  risk: 'green' | 'yellow' | 'red',
-): 'green' | 'yellow' | 'red' {
-  return risk
-}
-
-function scoreLabel(score: number | null): string {
-  if (score === null) return 'unavailable'
-  if (score >= 75) return 'healthy'
-  if (score >= 50) return 'watch'
+function healthLabel(score: number | null): string {
+  if (score === null) return 'not enough data'
+  if (score >= 80) return 'excellent'
+  if (score >= 65) return 'healthy'
+  if (score >= 45) return 'needs attention'
   return 'at risk'
 }
 
 export function OverviewTab({ report }: OverviewTabProps) {
-  const activity = selectActivity(report.activity, 90)
-  const commitsLast90 = Object.values(activity.daily).reduce(
-    (sum, count) => sum + count,
-    0,
-  )
-  const healthScore = report.health.score
-  const busFactor = report.busFactor
+  const health = report.health.score
   const adoption = report.metrics.adoptionScore
-  const ciRate = report.ci?.successRate ?? null
+  const deps = report.dependencies
+  const bus = report.busFactor
 
   return (
     <Box flexDirection="column">
-      <Box>
-        <Box
-          borderStyle="single"
-          borderColor="gray"
-          flexDirection="column"
-          paddingX={1}
-          width={34}
-        >
-          <Text bold color="cyan">
-            Adoption score
-          </Text>
-          <Text>
-            <Text bold>{adoption.toFixed(2)}</Text>
+      <Box paddingX={1}>
+        <Box flexDirection="column" width={24}>
+          <Text color="gray">REPOSITORY HEALTH</Text>
+          <Text bold color={scoreColor(health)}>
+            {health === null ? '--.-' : health.toFixed(1)}
             <Text color="gray"> / 100</Text>
           </Text>
-          <ProgressBar
-            value={adoption}
-            width={24}
-            color={progressColor(adoption)}
-          />
+          <Text color="gray">{healthLabel(health)}</Text>
         </Box>
-        <Box
-          borderStyle="single"
-          borderColor="gray"
-          flexDirection="column"
-          paddingX={1}
-          width={34}
-        >
-          <Text bold color="cyan">
-            Repository health
-          </Text>
-          <Text>
-            <Text bold>{healthScore === null ? 'n/a' : healthScore.toFixed(1)}</Text>
-            <Text color="gray"> / 100</Text>
-          </Text>
-          <ProgressBar
-            value={healthScore ?? 0}
-            width={24}
-            color={progressColor(healthScore ?? 0)}
-          />
-          <Text color="gray">{scoreLabel(healthScore)}</Text>
+        <Box flexDirection="column" flexGrow={1} paddingLeft={2}>
+          {report.health.components.map((component) => (
+            <Box key={component.key}>
+              <Box width={20}>
+                <Text color={component.available ? undefined : 'gray'}>
+                  {component.label}
+                </Text>
+              </Box>
+              <ProgressBar
+                value={component.available ? component.score : 0}
+                width={18}
+                showPercent={false}
+                color={component.available ? scoreColor(component.score) : 'gray'}
+              />
+              <Text color={component.available ? scoreColor(component.score) : 'gray'}>
+                {' '}
+                {component.available ? component.score.toFixed(1) : 'n/a'}
+              </Text>
+            </Box>
+          ))}
         </Box>
       </Box>
 
       <Box marginTop={1}>
-        <Box
-          borderStyle="single"
-          borderColor="gray"
-          flexDirection="column"
-          paddingX={1}
-          width={34}
-        >
-          <Text bold color="cyan">
-            Bus factor
-          </Text>
-          <Text color={riskColor(busFactor.risk)}>
-            {busFactor.risk.toUpperCase()}
-          </Text>
-          <Text>
-            Top 1: {busFactor.top1Share.toFixed(2)}% | Top 3:{' '}
-            {busFactor.top3Share.toFixed(2)}%
-          </Text>
-          <Text color="gray">Gini: {busFactor.gini.toFixed(2)}</Text>
-        </Box>
-        <Box
-          borderStyle="single"
-          borderColor="gray"
-          flexDirection="column"
-          paddingX={1}
-          width={34}
-        >
-          <Text bold color="cyan">
-            Tools
-          </Text>
-          <Text>
-            {report.metrics.toolsDetected}/{report.metrics.toolsChecked}{' '}
-            detected
-          </Text>
-          <Text color="gray">
-            {report.metrics.toolsRelevant} relevant to this repo
-          </Text>
-          <Text color="gray">
-            {report.contributorCount} contributors | {commitsLast90} commits/90d
-          </Text>
-        </Box>
+        <StatCard
+          title="Commit activity"
+          value={`${report.activity.commitsLast30} commits / 30d`}
+          detail={`${report.contributorCount} contributors  |  ${percent(bus.top1Share)} top 1`}
+          tone="cyan"
+        />
+        <Box width={1} />
+        <StatCard
+          title="Tool adoption"
+          value={`${report.metrics.toolsDetected}/${report.metrics.toolsChecked} detected`}
+          detail={`${report.metrics.toolsRelevant} relevant to this stack`}
+          tone={scoreColor(adoption)}
+        />
       </Box>
 
-      <Box marginTop={1} flexDirection="column">
-        <StatusMessage tone="muted">
-          {`Bus factor: ${busFactor.risk} | Tools: ${report.metrics.toolsDetected}/${report.metrics.toolsChecked} detected`}
-        </StatusMessage>
-        <StatusMessage tone="muted">
-          {`Activity: ${report.activity.commitsLast30} commits in the last 30 days`}
-        </StatusMessage>
-        <StatusMessage tone="muted">
-          {`Dependencies: ${report.dependencies.total} parsed${
-            report.dependencies.partial ? ' (partial)' : ''
-          }`}
-        </StatusMessage>
-        <StatusMessage tone="muted">
-          {ciRate === null
-            ? 'CI: no workflow runs found'
-            : `CI: ${ciRate.toFixed(2)}% success across ${report.ci?.totalRuns ?? 0} runs`}
-        </StatusMessage>
+      <Box marginTop={1}>
+        <StatCard
+          title="Dependencies"
+          value={`${compactNumber(deps.total)} direct`}
+          detail={`${deps.outdated} outdated  |  ${deps.advisoryCount} advisories`}
+          tone={deps.advisoryCount > 0 ? 'red' : deps.outdated > 0 ? 'yellow' : 'green'}
+        />
+        <Box width={1} />
+        <StatCard
+          title="Contributor concentration"
+          value={`${percent(bus.top1Share)} top 1`}
+          detail={`Gini ${bus.gini.toFixed(2)}  |  top 3 ${percent(bus.top3Share, 0)}`}
+          tone={riskColor(bus.risk)}
+        />
       </Box>
     </Box>
   )

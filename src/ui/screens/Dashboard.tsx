@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Box, Text, useInput } from 'ink'
 import type { ScanResult } from '../../scan.js'
+import { border } from '../theme.js'
 import { Header } from '../components/Header.js'
 import { OverviewTab } from '../tabs/OverviewTab.js'
 import { ToolsTab } from '../tabs/ToolsTab.js'
@@ -10,7 +11,7 @@ import { CiTab } from '../tabs/CiTab.js'
 
 type DashboardProps = {
   result: ScanResult
-  username?: string
+  username: string
   onBack: () => void
 }
 
@@ -26,6 +27,7 @@ type TabIndex = 0 | 1 | 2 | 3 | 4
 
 export function Dashboard({ result, username, onBack }: DashboardProps) {
   const [active, setActive] = useState<TabIndex>(0)
+  const tab = TABS[active]!
 
   useInput((input, key) => {
     if (input === 'q' || key.escape) {
@@ -43,42 +45,44 @@ export function Dashboard({ result, username, onBack }: DashboardProps) {
         repo={result.repo}
         languages={result.report.metrics.languages}
         username={username}
+        tab={tab.label}
       />
+
+      <Box marginTop={1} paddingX={1}>
+        {TABS.map((item, index) => {
+          const isActive = index === active
+          return (
+            <Box key={item.key} marginRight={1}>
+              <Text
+                color={isActive ? 'black' : 'gray'}
+                backgroundColor={isActive ? 'cyan' : undefined}
+                bold={isActive}
+              >
+                {' '}
+                {item.key} {item.label}{' '}
+              </Text>
+            </Box>
+          )
+        })}
+      </Box>
+
       <Box
-        borderStyle="single"
-        borderColor="gray"
+        borderStyle={border}
+        borderColor={active === 3 ? 'magenta' : 'cyan'}
         flexDirection="column"
-        paddingX={1}
-        paddingY={1}
+        marginTop={1}
+        paddingX={2}
       >
-        <Box>
-          {TABS.map((tab, index) => {
-            const isActive = index === active
-            return (
-              <Box key={tab.key} marginRight={2}>
-                <Text color={isActive ? 'cyan' : 'gray'} bold={isActive}>
-                  [{tab.key}] {tab.label}
-                </Text>
-              </Box>
-            )
-          })}
-        </Box>
+        {active === 0 ? <OverviewTab report={result.report} /> : null}
+        {active === 1 ? <ToolsTab report={result.report} /> : null}
+        {active === 2 ? <ActivityTab report={result.report} /> : null}
+        {active === 3 ? <DependenciesTab report={result.report} /> : null}
+        {active === 4 ? <CiTab report={result.report} /> : null}
+      </Box>
 
-        <Box marginTop={1} flexDirection="column">
-          {active === 0 ? <OverviewTab report={result.report} /> : null}
-          {active === 1 ? <ToolsTab tools={result.report.metrics.tools} /> : null}
-          {active === 2 ? <ActivityTab report={result.report} /> : null}
-          {active === 3 ? (
-            <DependenciesTab report={result.report} />
-          ) : null}
-          {active === 4 ? <CiTab report={result.report} /> : null}
-        </Box>
-
-        <Box marginTop={1}>
-          <Text color="gray">
-            Press 1-5 to switch tabs. q or Esc returns to the repository picker.
-          </Text>
-        </Box>
+      <Box marginTop={1} paddingX={1} justifyContent="space-between">
+        <Text color="gray">1-5 switch view  |  q/Esc repos  |  Ctrl+C exit</Text>
+        <Text color="gray">{result.report.scannedAt.slice(0, 19).replace('T', ' ')}</Text>
       </Box>
     </Box>
   )
