@@ -177,10 +177,35 @@ export type ParsedDependency = {
   version: string
 }
 
+export type DependencySeverity = 'low' | 'moderate' | 'high' | 'critical'
+
+export type DependencyAdvisory = {
+  id: string
+  severity: DependencySeverity | null
+}
+
+export type CheckedDependency = ParsedDependency & {
+  latestVersion: string | null
+  outdated: boolean
+  advisoryCount: number
+  maxSeverity: DependencySeverity | null
+  advisories: DependencyAdvisory[]
+  registryUrl: string
+}
+
 export type DependencySummary = {
   total: number
   ecosystems: Partial<Record<DependencyEcosystem, number>>
   partial: boolean
+  checked: number
+  outdated: number
+  advisoryCount: number
+  severity: Record<DependencySeverity, number>
+  checkedAt: string | null
+}
+
+export type DependencyReport = DependencySummary & {
+  rows: CheckedDependency[]
 }
 
 export type RepositoryReport = {
@@ -196,6 +221,6 @@ export type RepositoryReport = {
   busFactor: BusFactor
   activity: StoredActivity
   ci: CiHealth | null
-  dependencies: DependencySummary
+  dependencies: DependencyReport
   scannedAt: string
 }

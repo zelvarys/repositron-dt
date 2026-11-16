@@ -21,10 +21,7 @@ import {
 } from './insights/activity.js'
 import { computeBusFactor } from './insights/bus-factor.js'
 import { aggregateCiHealth } from './insights/ci.js'
-import {
-  parseDependencies,
-  summarizeDependencies,
-} from './insights/dependencies.js'
+import { collectDependencyHealth } from './insights/dependency-check.js'
 import { computeRepoHealth } from './insights/health.js'
 import {
   buildToolMetrics,
@@ -265,11 +262,12 @@ async function fetchCiRuns(
   }
 }
 
-function buildReport(
+async function buildReport(
   repo: GitHubRepo,
   context: ScanContext,
   now: Date,
-): RepositoryReport {
+  onProgress: ScanProgress,
+): Promise<RepositoryReport> {
   const languages = detectLanguages({
     rootFiles: context.rootFiles,
     commitFilenames: context.commits.flatMap((commit) =>
@@ -302,9 +300,11 @@ function buildReport(
           now.toISOString(),
         )
       : null
-  const dependencies = summarizeDependencies(
-    parseDependencies(context.configFiles),
+  const dependencies = await collectDependencyHealth(
+    context.configFiles,
+    onProgress,
   )
+  onProgress('Calculating insights...')
   const commitsLast90 = Object.values(activity.ranges[90].daily).reduce(
     (sum, count) => sum + count,
     0,
@@ -409,7 +409,6 @@ export async function scanRepository(
     ciError: ci.ciError,
   }
 
-  onProgress('Calculating insights...')
-  const report = buildReport(repo, context, new Date())
+  const report = await buildReport(repo, context, new Date(), onProgress)
   return { repo, context, report }
 }

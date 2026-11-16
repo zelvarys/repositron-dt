@@ -78,6 +78,10 @@ describe('summarizeDependencies', () => {
     expect(summary.total).toBe(3)
     expect(summary.ecosystems).toEqual({ npm: 1, pypi: 2 })
     expect(summary.partial).toBe(false)
+    expect(summary.checked).toBe(0)
+    expect(summary.outdated).toBe(0)
+    expect(summary.advisoryCount).toBe(0)
+    expect(summary.checkedAt).toBeNull()
   })
 })
 
