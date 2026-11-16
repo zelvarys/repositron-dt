@@ -227,10 +227,10 @@ export function RepoPicker({ client, username, onSelect }: RepoPickerProps) {
 
         <Box marginTop={1} paddingX={1} justifyContent="space-between">
           <Text color="white">
-            {filtered.length} match{filtered.length === 1 ? '' : 'es'}  |  Esc
-            leaves search
+            {filtered.length} match{filtered.length === 1 ? '' : 'es'}  |  Press Esc
+            to leave search
           </Text>
-          <Text color="white">Enter scans  |  Ctrl+C exits</Text>
+          <Text color="white">Press Enter to scan  |  Press Ctrl+C to exit</Text>
         </Box>
       </Box>
     </Box>

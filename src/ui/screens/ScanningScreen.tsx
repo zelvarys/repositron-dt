@@ -88,7 +88,7 @@ export function ScanningScreen({
           <Text>
             <Spinner type="dots" /> {message}
           </Text>
-          <Text color="white">Ctrl+C exits</Text>
+          <Text color="white">Press Ctrl+C to exit</Text>
         </Box>
       </Box>
     </Box>

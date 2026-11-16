@@ -70,7 +70,7 @@ export function DependenciesTab({ report }: DependenciesTabProps) {
       <Box justifyContent="space-between">
         <Box flexDirection="column">
           <Text bold color="cyan">
-            DEPENDENCY INTELLIGENCE
+            DEPENDENCY REPORT
           </Text>
           <Text color="white">
             {Object.entries(dependencies.ecosystems)
@@ -125,13 +125,13 @@ export function DependenciesTab({ report }: DependenciesTabProps) {
             </Box>
           )
         })}
-        <Text color="white">  f cycles  |  left/right pages</Text>
+        <Text color="white">  Press f to change filter</Text>
       </Box>
 
       <Box marginTop={1} flexDirection="column">
         <Text color="white">
           {'Dependency'.padEnd(27)}
-          {'Ecosystem'.padEnd(10)}
+          {'Type'.padEnd(8)}
           {'Current'.padEnd(13)}
           {'Latest'.padEnd(13)}
           {'Status'}
@@ -146,7 +146,7 @@ export function DependenciesTab({ report }: DependenciesTabProps) {
                 <Box width={27}>
                   <Text>{truncate(row.name, 26)}</Text>
                 </Box>
-                <Box width={10}>
+                <Box width={8}>
                   <Text color="white">{row.ecosystem}</Text>
                 </Box>
                 <Box width={13}>
@@ -173,7 +173,7 @@ export function DependenciesTab({ report }: DependenciesTabProps) {
       <Box marginTop={1} justifyContent="space-between">
         <Text color="white">
           {filtered.length} row{filtered.length === 1 ? '' : 's'}  |  page{' '}
-          {safePage + 1}/{totalPages}
+          {safePage + 1}/{totalPages}  |  Press left/right arrows to change page
         </Text>
         {dependencies.partial ? (
           <Badge label="partial registry data" tone="yellow" />
