@@ -27,9 +27,14 @@ export function ActivityTab({ report }: ActivityTabProps) {
     weeks[0]!,
   )
   const weekdayTotal = activity.weekday.reduce((sum, value) => sum + value, 0)
-  const weekdayCells = MONDAY_FIRST.map((day) =>
-    `${WEEKDAYS[day]!.slice(0, 2)}${String(activity.weekday[day] ?? 0).padStart(2)}`,
-  ).join(' ')
+  const weekdayPairs = MONDAY_FIRST.map(
+    (day) =>
+      `${WEEKDAYS[day]} ${String(activity.weekday[day] ?? 0).padStart(2, '0')}`,
+  )
+  const weekdayLines = [
+    weekdayPairs.slice(0, 4).join('  '),
+    weekdayPairs.slice(4).join('  '),
+  ]
 
   return (
     <Box flexDirection="column">
@@ -111,7 +116,11 @@ export function ActivityTab({ report }: ActivityTabProps) {
           <Text bold color="cyan">
             WEEKDAY PULSE
           </Text>
-          <Text color="cyan">{weekdayCells}</Text>
+          {weekdayLines.map((line) => (
+            <Text key={line} color="blue">
+              {line}
+            </Text>
+          ))}
           <Text color="white">
             {weekdayTotal} commits across the 90 day window
           </Text>

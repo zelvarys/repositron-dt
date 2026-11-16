@@ -79,7 +79,7 @@ export function CiTab({ report }: CiTabProps) {
         <Text color="white">
           {'Workflow'.padEnd(30)}
           {'Success'.padStart(9)}
-          {'Runs'.padStart(6)}
+          {'Runs'.padStart(7)}
           {'Average'.padStart(10)}
         </Text>
         {ci.workflows.length === 0 ? (
@@ -90,27 +90,21 @@ export function CiTab({ report }: CiTabProps) {
               <Box width={30}>
                 <Text>{truncate(workflow.name, 29)}</Text>
               </Box>
-              <Box width={18}>
-                <ProgressBar
-                  value={workflow.successRate}
-                  width={11}
-                  showPercent={false}
-                  color={scoreColor(workflow.successRate)}
-                />
-              </Box>
-              <Box width={6}>
+              <Box width={9}>
                 <Text color={scoreColor(workflow.successRate)}>
-                  {' '}
-                  {workflow.successRate.toFixed(0).padStart(3)}%
+                  {`${workflow.successRate.toFixed(0)}%`.padStart(9)}
                 </Text>
               </Box>
-              <Box width={6}>
-                <Text color="white">{String(workflow.totalRuns).padStart(4)}</Text>
+              <Box width={7}>
+                <Text color="white">
+                  {String(workflow.totalRuns).padStart(7)}
+                </Text>
               </Box>
-              <Text color="white">
-                {' '}
-                {duration(workflow.averageDurationSeconds)}
-              </Text>
+              <Box width={10}>
+                <Text color="white">
+                  {duration(workflow.averageDurationSeconds).padStart(10)}
+                </Text>
+              </Box>
             </Box>
           ))
         )}
