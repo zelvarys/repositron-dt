@@ -20,3 +20,13 @@ Scaffolded Ink and ported insights to run in-memory.
 Added Vitest coverage for tool adoption, bus factor and Gini math, activity
 buckets and commit quality, CI aggregation, and dependency parsing. The suite
 passes locally with type checking and a production build.
+
+## 2026-11-16 - Repository filtering, dependency intelligence, UI refresh
+
+- Limited the picker to owned repositories and repositories with commits or
+  merged pull requests in the last 12 months.
+- Added registry latest-version lookups, semver comparison, and OSV advisory
+  aggregation to the dependency report.
+- Rebuilt the UI around a shared theme, stat cards, sparklines, badges, a staged
+  scanning checklist, and interactive dependency filtering.
+- Added `REPOSITRON_ASCII=1` as a glyph fallback.

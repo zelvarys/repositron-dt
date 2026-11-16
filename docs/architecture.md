@@ -69,20 +69,23 @@ picker <- error
 ```
 
 - `RepoPicker` fetches repositories on mount, filters them locally, and starts a
-  scan when the user selects one. A `pending` flag prevents updates after
-  unmount.
+  scan when the user selects one. It lists only repositories owned by the user or
+  genuinely contributed to in the last 12 months; organization membership alone
+  is not enough. A `pending` flag prevents updates after unmount.
 - `scanning` renders the progress callback from `scanRepository`.
 - `dashboard` receives the completed `ScanResult` and handles tab state.
 - `error` shows the failure message and returns to the picker on `q` or Esc.
 
 `Dashboard` uses Ink's `useInput` for its key bindings. `RepoPicker` routes input
 between its text field and `ink-select-input`: typing a letter moves focus to the
-search field, Enter or Esc returns to the list. No screen prints emojis; status is
-expressed with ASCII markers such as `[OK]`, `[--]`, and `[####----]`.
+search field, Enter or Esc returns to the list. No screen prints emojis. Status is
+expressed with terminal glyphs such as `[x]`, `[>]`, `[ ]`, percent bars, and
+score-colored borders. `REPOSITRON_ASCII=1` switches the block, sparkline, and
+marker glyphs to ASCII equivalents.
 
-The Header, StatusMessage, and ProgressBar components are shared across screens.
-Chalk provides terminal colors while Ink handles layout, borders, and live
-rendering.
+The Header, StatusMessage, ProgressBar, StatCard, Badge, and Sparkline
+components are shared across screens. Ink handles layout, borders, and live
+rendering; the theme module maps scores and severities to terminal colors.
 
 ## Scan pipeline
 
@@ -94,8 +97,9 @@ rendering.
 4. Fetch known root config files from `CONFIG_FILE_CANDIDATES` and
    `CONFIG_SUBDIR_CANDIDATES`.
 5. Fetch `.github/workflows`, read each workflow file, and fetch workflow runs.
-6. Build a `ScanContext`, run the detectors and aggregators, and return
-   `{ repo, context, report }`.
+6. Build a `ScanContext`, parse dependency manifests, and query registries and
+   OSV for latest versions and advisories.
+7. Run the detectors and aggregators, then return `{ repo, context, report }`.
 
 Hard limits keep the scan bounded:
 
@@ -107,29 +111,37 @@ Hard limits keep the scan bounded:
 | Workflow run pages | 3 (300 runs) |
 | Commit detail concurrency | 5 |
 | Activity history | 365 days |
+| Parsed dependencies | 300 |
+| Dependency lookup concurrency | 8 |
+| Registry and OSV timeout | 10 seconds each |
 
 `src/github/client.ts` adds the token, GitHub API version header, a 20 second
 timeout, and typed errors for authentication, rate limits, and timeouts.
 `src/github/fetch.ts` handles pagination and content decoding. `src/github/repos.ts`
-contains the repository list and detail calls.
+contains the owned/contributed repository list and detail calls. The contribution
+lookup uses GraphQL commit contributions and merged pull requests from the last
+365 days.
 
-## Pure insight layer
+## Insight layer
 
-Everything under `src/insights/` is synchronous and in-memory. It receives a
-`ScanContext` and returns plain objects:
+Most of `src/insights/` is synchronous and in-memory. It receives a `ScanContext`
+and returns plain objects. Dependency health is the network-backed exception.
 
 - `tools.ts` runs 13 detectors and builds `RepoMetrics`.
 - `bus-factor.ts` computes contributor shares and the Gini coefficient.
 - `activity.ts` builds daily, weekly, weekday, hour, author, and commit-quality
   aggregates.
 - `ci.ts` aggregates workflow runs and filters by workflow, branch, and time.
-- `dependencies.ts` parses manifests locally. It explicitly does not call
-  registries, OSV, or advisory APIs.
+- `dependencies.ts` parses manifests locally.
+- `dependency-check.ts` orchestrates bounded, concurrent registry and OSV lookups;
+  `dependency-registry.ts`, `semver.ts`, and `osv.ts` implement the lookups and
+  version comparisons.
 - `health.ts` combines activity, CI, contributor spread, and commit quality into
   a weighted score when the underlying data is available.
 
-This separation keeps tests fast and means the UI never parses GitHub payloads or
-performs metric arithmetic. See [insights.md](insights.md) for formulas and
+This separation means the UI never parses GitHub payloads or performs metric
+arithmetic. Tests stub `fetch` for the network-backed dependency lookups, so they stay
+fast and deterministic. See [insights.md](insights.md) for formulas and
 limitations.
 
 ## Storage and security

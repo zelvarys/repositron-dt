@@ -83,6 +83,10 @@ the pure logic:
 - `tests/activity.test.ts`: weekly buckets, range selection, and commit quality.
 - `tests/ci.test.ts`: workflow aggregation and filtering.
 - `tests/dependencies.test.ts`: manifest parsing and summaries.
+- `tests/dependency-check.test.ts`: outdated detection, advisory aggregation,
+  and partial registry behavior.
+- `tests/repos.test.ts`: owned versus contributed repository filtering and
+  pagination helpers.
 
 Watch mode:
 
@@ -130,5 +134,6 @@ tests/                     Vitest coverage for the pure logic
   request.
 - Keep pure insight changes separate from UI changes where practical.
 - Do not add a database, server, or background worker to the CLI.
-- Do not print emojis in terminal output. Use ASCII markers and colors.
+- Do not print emojis in terminal output. Use the shared glyph and theme helpers;
+  preserve the `REPOSITRON_ASCII=1` fallback.
 - Do not commit tokens, personal access tokens, or `~/.config/repositron`.

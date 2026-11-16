@@ -6,10 +6,11 @@
 
 <p align="center">An interactive terminal dashboard for GitHub repository health.</p>
 
-Repositron is a local-first CLI. It logs in to GitHub once, lets you pick one of
-your repositories, scans it on demand, and presents adoption, activity, bus
-factor, dependency, and CI insights in a keyboard-driven terminal UI. There is no
-database, hosted backend, or worker to run.
+Repositron is a local-first CLI. It logs in to GitHub once, lets you pick a
+repository you own or have contributed to, scans it on demand, and presents
+adoption, activity, bus factor, dependency, and CI insights in a
+keyboard-driven terminal UI. There is no database, hosted backend, or worker to
+run.
 
 ## Quick start
 
@@ -25,8 +26,9 @@ On first run Repositron starts GitHub's OAuth Device Flow:
 2. Enter the short code shown in the terminal.
 3. Authorize the request. The token is stored locally for next time.
 
-The app then shows your repositories. Select one with the arrow keys and press
-Enter to scan it.
+The picker lists repositories you own plus repositories you contributed to in
+the last 12 months. Organization membership alone does not add a repository to
+the list.
 
 ## Authentication
 
@@ -52,17 +54,25 @@ user config directory, protected by your operating system account permissions.
 
 ```text
 +------------------------------------------------------------------------------+
-| Repositron | GitHub repository dashboard                               @octocat |
+| [>_] REPOSITRON  repository intelligence                          @octocat   |
 +------------------------------------------------------------------------------+
-| Select a repository                                                          |
-| Type or press / to search. Up/Down to move. Enter to scan.                   |
-|                                                                              |
-| Search: (all repositories)                                                   |
-| > octocat/widget                  1234 stars  TypeScript                      |
-|   octocat/api                      210 stars  Go                              |
-|   octocat/notes                     18 stars  Python                          |
-|                                                                              |
-| 42 repositories | Esc leaves search                                          |
+| FIND A REPOSITORY                                42 owned or contributed    |
+| +--------------------------------------------------------------------------+ |
+| | > Search repositories                                                    | |
+| +--------------------------------------------------------------------------+ |
+| +--------------------------------------------------------------------------+ |
+| | Repositories                                      arrow keys to move     | |
+| | ▸ octocat/widget                     1234 stars  TypeScript              | |
+| |   octocat/api                         210 stars  Go                      | |
+| |   octocat/notes                        18 stars  Python                  | |
+| +--------------------------------------------------------------------------+ |
+| +--------------------------------------------------------------------------+ |
+| | octocat/widget                                             ● public      | |
+| | An interactive terminal dashboard for repository health.                 | |
+| | branch main  ★ 1.2k  forks 84                         updated 2d ago      | |
+| +--------------------------------------------------------------------------+ |
++------------------------------------------------------------------------------+
+| 42 matches  |  Esc leaves search                     Enter scans  | Ctrl+C exits |
 +------------------------------------------------------------------------------+
 ```
 
@@ -70,19 +80,30 @@ user config directory, protected by your operating system account permissions.
 
 ```text
 +------------------------------------------------------------------------------+
-| Repositron | octocat/widget | 1234 stars | js, python                         |
+| [>_] REPOSITRON  repository intelligence                   OVERVIEW @octocat |
+| octocat/widget                                                     ★ 1234    |
 +------------------------------------------------------------------------------+
-| [1] Overview  [2] Tools  [3] Activity  [4] Dependencies  [5] CI              |
-|                                                                              |
-| +-- Adoption score ----------------+  +-- Repository health ---------------+ |
-| | 72.50 / 100                      |  | 81.20 / 100                       | |
-| | [###############-------] 73%     |  | [###################---] 81%      | |
-| +----------------------------------+  +-----------------------------------+ |
-|                                                                              |
-| Bus factor: YELLOW | Tools: 8/13 detected | Commits/30d: 24                 |
-| Dependencies: 46 parsed | CI: 92.00% success across 38 runs                |
-|                                                                              |
-| Press 1-5 to switch tabs. q or Esc returns to the repository picker.         |
+| [ 1 Overview ]  2 Tools   3 Activity   4 Dependencies   5 CI                 |
+| +--------------------------------------------------------------------------+ |
+| | REPOSITORY HEALTH                          Activity  █████████████░░ 82   | |
+| | 84.2 / 100                                 Workflow  ████████████░░░ 78   | |
+| | healthy                                    Spread    ██████████░░░░░ 71   | |
+| |                                            Quality   ███████████░░░░ 74   | |
+| +--------------------------------------------------------------------------+ |
+| +---------------------------------+  +-------------------------------------+ |
+| | COMMIT ACTIVITY                 |  | TOOL ADOPTION                       | |
+| | 24 commits / 30d                |  | 8/13 detected                       | |
+| | 7 contributors                  |  | ██████████████░░░░░░  73%           | |
+| | ▁▂▅▃█▂▁▃▅█▂▁▃                    |  | 11 relevant to this stack           | |
+| +---------------------------------+  +-------------------------------------+ |
+| +---------------------------------+  +-------------------------------------+ |
+| | DEPENDENCIES                    |  | CONTRIBUTOR CONCENTRATION           | |
+| | 46 direct                       |  | 38.2% top 1                         | |
+| | 46 checked                      |  | Gini 0.41  |  top 3 71%             | |
+| | 7 outdated   2 advisories       |  | ● MODERATE RISK                     | |
+| +---------------------------------+  +-------------------------------------+ |
++------------------------------------------------------------------------------+
+| 1-5 switch view  |  q/Esc repos  |  Ctrl+C exit          2026-11-16 01:42:11 |
 +------------------------------------------------------------------------------+
 ```
 
@@ -95,6 +116,8 @@ user config directory, protected by your operating system account permissions.
 | Repository picker | Enter | Scan selected repository |
 | Repository picker | Esc | Leave the search field |
 | Dashboard | `1`-`5` | Switch tabs |
+| Dependencies tab | `f` | Cycle all / outdated / advisories |
+| Dependencies tab | Left / Right | Page through rows |
 | Dashboard | `q` / Esc | Return to the repository picker |
 | Any screen | Ctrl+C | Exit |
 
@@ -108,14 +131,25 @@ user config directory, protected by your operating system account permissions.
 - Commit activity by day, week, and contributor over 30, 90, 180, and 365 day
   windows.
 - GitHub Actions success rates, average durations, and recent failures.
-- Dependency counts parsed from local manifests such as `package.json`,
+- Direct dependencies parsed from local manifests such as `package.json`,
   `requirements.txt`, `pyproject.toml`, `go.mod`, `Gemfile`, and
   `composer.json`.
+- Latest versions from npm, PyPI, the Go module proxy, RubyGems, and Packagist,
+  plus OSV advisories with severity counts.
 
 Scans are intentionally bounded to keep the CLI responsive: the 30 most recent
-commit diffs, up to 500 commits, up to 200 contributors, and up to 300 workflow
-runs. See [docs/insights.md](docs/insights.md) for the metric definitions and
-their limitations.
+commit diffs, up to 500 commits, up to 200 contributors, up to 300 workflow
+runs, and up to 300 parsed dependencies. Registry and OSV lookups run eight at a
+time with a 10 second timeout per request. See
+[docs/insights.md](docs/insights.md) for the metric definitions and their
+limitations.
+
+## Terminal rendering
+
+The UI uses ANSI colors, rounded borders, block meters, sparklines, and
+Unicode glyphs. It does not print emojis. Set `REPOSITRON_ASCII=1` to swap
+blocks, sparklines, and marker glyphs for ASCII equivalents on limited
+terminals.
 
 ## Install from source
 
