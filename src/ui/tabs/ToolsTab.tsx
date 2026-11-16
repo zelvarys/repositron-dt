@@ -30,12 +30,12 @@ export function ToolsTab({ report }: ToolsTabProps) {
           <Text bold color="cyan">
             TOOL ADOPTION
           </Text>
-          <Text color="gray">
+          <Text color="white">
             {detected} of {tools.length} tools detected
           </Text>
         </Box>
         <Box flexDirection="column" alignItems="flex-end">
-          <Text color="gray">weighted adoption</Text>
+          <Text color="white">weighted adoption</Text>
           <ProgressBar
             value={adoption}
             width={18}
@@ -47,16 +47,16 @@ export function ToolsTab({ report }: ToolsTabProps) {
       <Box flexDirection="column" marginTop={1}>
         {toolsByCategory(tools).map((group) => (
           <Box key={group.category} flexDirection="column" marginBottom={1}>
-            <Text bold color="gray">
+            <Text bold color="white">
               {CATEGORY_LABELS[group.category]}
             </Text>
             {group.tools.map((tool) => {
               const active = tool.detected && tool.relevant
               return (
                 <Box key={tool.name}>
-                  <Text color={active ? 'green' : 'gray'}>{glyphs.dot} </Text>
+                  <Text color={active ? 'green' : 'white'}>{glyphs.dot} </Text>
                   <Box width={16}>
-                    <Text color={active ? undefined : 'gray'}>{tool.name}</Text>
+                    <Text color={active ? undefined : 'white'}>{tool.name}</Text>
                   </Box>
                   {active ? (
                     <>
@@ -66,14 +66,14 @@ export function ToolsTab({ report }: ToolsTabProps) {
                         color={scoreColor(tool.adoptionRate)}
                       />
                       <Box width={10}>
-                        <Text color="gray">
+                        <Text color="white">
                           {' '}
                           {tool.contributorsUsing}/{tool.contributorCount}
                         </Text>
                       </Box>
                     </>
                   ) : (
-                    <Text color="gray">
+                    <Text color="white">
                       {tool.relevant ? 'not detected' : 'not applicable'}
                     </Text>
                   )}
@@ -84,7 +84,7 @@ export function ToolsTab({ report }: ToolsTabProps) {
         ))}
       </Box>
 
-      <Text color="gray">
+      <Text color="white">
         Adoption is a file-touch proxy from the latest 30 commit diffs; it does
         not prove a tool ran locally.
       </Text>

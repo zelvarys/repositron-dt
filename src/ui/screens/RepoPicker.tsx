@@ -23,7 +23,7 @@ type Focus = 'list' | 'search'
 function Pointer({ isSelected = false }: { isSelected?: boolean }) {
   return (
     <Box marginRight={1}>
-      <Text color={isSelected ? 'cyan' : 'gray'}>
+      <Text color={isSelected ? 'cyan' : 'white'}>
         {isSelected ? glyphs.pointer : ' '}
       </Text>
     </Box>
@@ -122,14 +122,14 @@ export function RepoPicker({ client, username, onSelect }: RepoPickerProps) {
           <Text bold color="cyan">
             FIND A REPOSITORY
           </Text>
-          <Text color="gray">
+          <Text color="white">
             {repos.length} owned or contributed repos
           </Text>
         </Box>
 
         <Box
           borderStyle={border}
-          borderColor={focus === 'search' ? 'cyan' : 'gray'}
+          borderColor={focus === 'search' ? 'cyan' : 'white'}
           marginTop={1}
           paddingX={1}
         >
@@ -142,7 +142,7 @@ export function RepoPicker({ client, username, onSelect }: RepoPickerProps) {
               placeholder="Search repositories"
             />
           ) : (
-            <Text color={query ? undefined : 'gray'}>
+            <Text color={query ? undefined : 'white'}>
               {query || 'Type to search, or press /'}
             </Text>
           )}
@@ -150,14 +150,14 @@ export function RepoPicker({ client, username, onSelect }: RepoPickerProps) {
 
         <Box
           borderStyle={border}
-          borderColor={focus === 'list' ? 'cyan' : 'gray'}
+          borderColor={focus === 'list' ? 'cyan' : 'white'}
           flexDirection="column"
           marginTop={1}
           paddingX={1}
         >
           <Box justifyContent="space-between">
             <Text bold>Repositories</Text>
-            <Text color="gray">
+            <Text color="white">
               {focus === 'list' ? 'arrow keys to move' : 'enter to focus list'}
             </Text>
           </Box>
@@ -171,7 +171,7 @@ export function RepoPicker({ client, username, onSelect }: RepoPickerProps) {
           ) : error ? (
             <Box flexDirection="column" marginY={1}>
               <StatusMessage tone="error">{error}</StatusMessage>
-              <Text color="gray">Press r to retry.</Text>
+              <Text color="white">Press r to retry.</Text>
             </Box>
           ) : items.length === 0 ? (
             <Box marginY={1}>
@@ -209,16 +209,16 @@ export function RepoPicker({ client, username, onSelect }: RepoPickerProps) {
                 tone={highlighted.private ? 'yellow' : 'green'}
               />
             </Box>
-            <Text color="gray">
+            <Text color="white">
               {highlighted.description ?? 'No repository description.'}
             </Text>
             <Box justifyContent="space-between">
-              <Text color="gray">
+              <Text color="white">
                 branch {highlighted.default_branch}  {glyphs.star}{' '}
                 {compactNumber(highlighted.stargazers_count)}  forks{' '}
                 {compactNumber(highlighted.forks_count)}
               </Text>
-              <Text color="gray">
+              <Text color="white">
                 updated {relativeTime(highlighted.updated_at)}
               </Text>
             </Box>
@@ -226,11 +226,11 @@ export function RepoPicker({ client, username, onSelect }: RepoPickerProps) {
         ) : null}
 
         <Box marginTop={1} paddingX={1} justifyContent="space-between">
-          <Text color="gray">
+          <Text color="white">
             {filtered.length} match{filtered.length === 1 ? '' : 'es'}  |  Esc
             leaves search
           </Text>
-          <Text color="gray">Enter scans  |  Ctrl+C exits</Text>
+          <Text color="white">Enter scans  |  Ctrl+C exits</Text>
         </Box>
       </Box>
     </Box>

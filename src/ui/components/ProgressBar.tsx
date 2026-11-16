@@ -21,9 +21,9 @@ export function ProgressBar({
   return (
     <Text>
       <Text color={tone}>{glyphs.filled.repeat(filled)}</Text>
-      <Text color="gray">{glyphs.empty.repeat(width - filled)}</Text>
+      <Text color="white">{glyphs.empty.repeat(width - filled)}</Text>
       {showPercent ? (
-        <Text color="gray"> {clamped.toFixed(0).padStart(3)}%</Text>
+        <Text color="white"> {clamped.toFixed(0).padStart(3)}%</Text>
       ) : null}
     </Text>
   )

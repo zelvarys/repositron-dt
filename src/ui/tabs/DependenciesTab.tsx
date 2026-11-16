@@ -37,7 +37,7 @@ function statusOf(row: CheckedDependency): {
   }
   if (row.outdated) return { label: 'OUTDATED', tone: 'yellow' }
   if (row.latestVersion) return { label: 'current', tone: 'green' }
-  return { label: 'unverified', tone: 'gray' }
+  return { label: 'unverified', tone: 'white' }
 }
 
 export function DependenciesTab({ report }: DependenciesTabProps) {
@@ -79,13 +79,13 @@ export function DependenciesTab({ report }: DependenciesTabProps) {
           <Text bold color="cyan">
             DEPENDENCY INTELLIGENCE
           </Text>
-          <Text color="gray">
+          <Text color="white">
             {Object.entries(dependencies.ecosystems)
               .map(([name, count]) => `${name} ${count}`)
               .join('  ') || 'no manifests'}
           </Text>
         </Box>
-        <Text color="gray">
+        <Text color="white">
           checked {dependencies.checked}/{dependencies.total}{' '}
           {relativeTime(dependencies.checkedAt)}
         </Text>
@@ -93,29 +93,29 @@ export function DependenciesTab({ report }: DependenciesTabProps) {
 
       <Box marginTop={1} justifyContent="space-between">
         <Box flexDirection="column">
-          <Text color="gray">DIRECT</Text>
+          <Text color="white">DIRECT</Text>
           <Text bold>{dependencies.total}</Text>
         </Box>
         <Box flexDirection="column">
-          <Text color="gray">OUTDATED</Text>
+          <Text color="white">OUTDATED</Text>
           <Text bold color={dependencies.outdated > 0 ? 'yellow' : 'green'}>
             {dependencies.outdated}
           </Text>
         </Box>
         <Box flexDirection="column">
-          <Text color="gray">ADVISORIES</Text>
+          <Text color="white">ADVISORIES</Text>
           <Text bold color={dependencies.advisoryCount > 0 ? 'red' : 'green'}>
             {dependencies.advisoryCount}
           </Text>
         </Box>
         <Box flexDirection="column">
-          <Text color="gray">CRITICAL / HIGH</Text>
+          <Text color="white">CRITICAL / HIGH</Text>
           <Text bold color={dependencies.severity.critical > 0 ? 'red' : 'gray'}>
             {dependencies.severity.critical} / {dependencies.severity.high}
           </Text>
         </Box>
         <Box flexDirection="column">
-          <Text color="gray">MODERATE / LOW</Text>
+          <Text color="white">MODERATE / LOW</Text>
           <Text bold color={dependencies.severity.moderate > 0 ? 'yellow' : 'gray'}>
             {dependencies.severity.moderate} / {dependencies.severity.low}
           </Text>
@@ -128,7 +128,7 @@ export function DependenciesTab({ report }: DependenciesTabProps) {
           return (
             <Box key={item.key} marginRight={1}>
               <Text
-                color={active ? 'black' : 'gray'}
+                color={active ? 'black' : 'white'}
                 backgroundColor={active ? 'cyan' : undefined}
                 bold={active}
               >
@@ -138,11 +138,11 @@ export function DependenciesTab({ report }: DependenciesTabProps) {
             </Box>
           )
         })}
-        <Text color="gray">  f cycles  |  left/right pages</Text>
+        <Text color="white">  f cycles  |  left/right pages</Text>
       </Box>
 
       <Box marginTop={1} flexDirection="column">
-        <Text color="gray">
+        <Text color="white">
           {'Dependency'.padEnd(27)}
           {'Ecosystem'.padEnd(10)}
           {'Current'.padEnd(13)}
@@ -150,7 +150,7 @@ export function DependenciesTab({ report }: DependenciesTabProps) {
           {'Status'}
         </Text>
         {visible.length === 0 ? (
-          <Text color="gray">No dependencies in this view.</Text>
+          <Text color="white">No dependencies in this view.</Text>
         ) : (
           visible.map((row) => {
             const status = statusOf(row)
@@ -161,17 +161,17 @@ export function DependenciesTab({ report }: DependenciesTabProps) {
                     <Text>{truncate(row.name, 26)}</Text>
                   </Box>
                   <Box width={10}>
-                    <Text color="gray">{row.ecosystem}</Text>
+                    <Text color="white">{row.ecosystem}</Text>
                   </Box>
                   <Box width={13}>
-                    <Text color="gray">
+                    <Text color="white">
                       {row.version === ANY_VERSION
                         ? 'any'
                         : truncate(row.version, 12)}
                     </Text>
                   </Box>
                   <Box width={13}>
-                    <Text color="gray">
+                    <Text color="white">
                       {row.latestVersion
                         ? truncate(row.latestVersion, 12)
                         : 'unknown'}
@@ -180,7 +180,7 @@ export function DependenciesTab({ report }: DependenciesTabProps) {
                   <Text color={status.tone}>{status.label}</Text>
                 </Box>
                 {row.advisoryCount > 0 ? (
-                  <Text color="gray">
+                  <Text color="white">
                     {' '.repeat(27)}
                     {truncate(
                       row.advisories
@@ -198,7 +198,7 @@ export function DependenciesTab({ report }: DependenciesTabProps) {
       </Box>
 
       <Box marginTop={1} justifyContent="space-between">
-        <Text color="gray">
+        <Text color="white">
           {filtered.length} row{filtered.length === 1 ? '' : 's'}  |  page{' '}
           {safePage + 1}/{totalPages}
         </Text>

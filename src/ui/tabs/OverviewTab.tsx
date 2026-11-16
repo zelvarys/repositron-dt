@@ -27,18 +27,18 @@ export function OverviewTab({ report }: OverviewTabProps) {
     <Box flexDirection="column">
       <Box paddingX={1}>
         <Box flexDirection="column" width={24}>
-          <Text color="gray">REPOSITORY HEALTH</Text>
+          <Text color="white">REPOSITORY HEALTH</Text>
           <Text bold color={scoreColor(health)}>
             {health === null ? '--.-' : health.toFixed(1)}
-            <Text color="gray"> / 100</Text>
+            <Text color="white"> / 100</Text>
           </Text>
-          <Text color="gray">{healthLabel(health)}</Text>
+          <Text color="white">{healthLabel(health)}</Text>
         </Box>
         <Box flexDirection="column" flexGrow={1} paddingLeft={2}>
           {report.health.components.map((component) => (
             <Box key={component.key}>
               <Box width={20}>
-                <Text color={component.available ? undefined : 'gray'}>
+                <Text color={component.available ? undefined : 'white'}>
                   {component.label}
                 </Text>
               </Box>
@@ -46,9 +46,9 @@ export function OverviewTab({ report }: OverviewTabProps) {
                 value={component.available ? component.score : 0}
                 width={18}
                 showPercent={false}
-                color={component.available ? scoreColor(component.score) : 'gray'}
+                color={component.available ? scoreColor(component.score) : 'white'}
               />
-              <Text color={component.available ? scoreColor(component.score) : 'gray'}>
+              <Text color={component.available ? scoreColor(component.score) : 'white'}>
                 {' '}
                 {component.available ? component.score.toFixed(1) : 'n/a'}
               </Text>

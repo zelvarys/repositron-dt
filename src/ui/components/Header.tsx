@@ -25,9 +25,9 @@ export function Header({ repo, languages, username, tab }: HeaderProps) {
           <Text bold color="cyan">
             {'[>_]'} REPOSITRON
           </Text>
-          <Text color="gray">  repository intelligence</Text>
+          <Text color="white">  repository intelligence</Text>
         </Text>
-        <Text color="gray">
+        <Text color="white">
           {tab ? `${tab.toUpperCase()}  ` : ''}
           {username ? `@${username}` : 'local'}
         </Text>
@@ -40,7 +40,7 @@ export function Header({ repo, languages, username, tab }: HeaderProps) {
             </Link>
             {repo.private ? <Text color="yellow">  private</Text> : null}
           </Text>
-          <Text color="gray">
+          <Text color="white">
             {repo.stargazers_count} stars  {languageText}
           </Text>
         </Box>

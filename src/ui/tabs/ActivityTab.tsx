@@ -56,22 +56,22 @@ export function ActivityTab({ report }: ActivityTabProps) {
           <Text bold color="cyan">
             WEEKLY RHYTHM
           </Text>
-          <Text color="gray">last 12 weeks</Text>
+          <Text color="white">last 12 weeks</Text>
         </Box>
         <Box>
           <Sparkline values={weeks.map((week) => week.count)} color="cyan" />
-          <Text color="gray">
+          <Text color="white">
             {' '}
             {weeks.reduce((sum, week) => sum + week.count, 0)} commits
           </Text>
         </Box>
         <Box justifyContent="space-between">
-          <Text color="gray">{dayLabel(weeks[0]!.weekStart)}</Text>
-          <Text color="gray">
+          <Text color="white">{dayLabel(weeks[0]!.weekStart)}</Text>
+          <Text color="white">
             busiest {dayLabel(weeks.reduce((best, week) => (week.count > best.count ? week : best), weeks[0]!).weekStart)} with{' '}
             {Math.max(...weeks.map((week) => week.count))}
           </Text>
-          <Text color="gray">{dayLabel(weeks[weeks.length - 1]!.weekStart)}</Text>
+          <Text color="white">{dayLabel(weeks[weeks.length - 1]!.weekStart)}</Text>
         </Box>
       </Box>
 
@@ -81,7 +81,7 @@ export function ActivityTab({ report }: ActivityTabProps) {
             TOP CONTRIBUTORS
           </Text>
           {topContributors.length === 0 ? (
-            <Text color="gray">No commits in the last 90 days.</Text>
+            <Text color="white">No commits in the last 90 days.</Text>
           ) : (
             topContributors.map((contributor) => (
               <Box key={contributor.login}>
@@ -89,7 +89,7 @@ export function ActivityTab({ report }: ActivityTabProps) {
                   <Text>{contributor.login.slice(0, 19)}</Text>
                 </Box>
                 <Box width={12}>
-                  <Text color="gray">
+                  <Text color="white">
                     {String(contributor.commits).padStart(4)} commits
                   </Text>
                 </Box>
@@ -111,12 +111,12 @@ export function ActivityTab({ report }: ActivityTabProps) {
           <Sparkline values={activity.weekday.slice(1).concat(activity.weekday[0]!)} color="magenta" />
           <Box justifyContent="space-between">
             {WEEKDAYS.map((day) => (
-              <Text key={day} color="gray">
+              <Text key={day} color="white">
                 {day[0]}
               </Text>
             ))}
           </Box>
-          <Text color="gray">
+          <Text color="white">
             {activity.weekday.reduce((sum, value) => sum + value, 0)} commits
             across the 90 day window
           </Text>

@@ -43,7 +43,7 @@ function ErrorScreen({ message, onBack }: ErrorScreenProps) {
         </Text>
         <StatusMessage tone="error">{message}</StatusMessage>
         <Box marginTop={1}>
-          <Text color="gray">q or Esc returns to the repository picker.</Text>
+          <Text color="white">q or Esc returns to the repository picker.</Text>
         </Box>
       </Box>
     </Box>

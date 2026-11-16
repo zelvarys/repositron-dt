@@ -2,13 +2,13 @@ import { Box, Text } from 'ink'
 
 export type StatusTone = 'info' | 'success' | 'warning' | 'error' | 'muted'
 
-const COLORS: Record<StatusTone, 'cyan' | 'green' | 'yellow' | 'red' | 'gray'> =
+const COLORS: Record<StatusTone, 'cyan' | 'green' | 'yellow' | 'red' | 'white'> =
   {
     info: 'cyan',
     success: 'green',
     warning: 'yellow',
     error: 'red',
-    muted: 'gray',
+    muted: 'white',
   }
 
 type StatusMessageProps = {

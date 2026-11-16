@@ -26,7 +26,7 @@ export function CiTab({ report }: CiTabProps) {
         <Text bold color="cyan">
           CI HEALTH
         </Text>
-        <Text color="gray">No GitHub Actions workflows found.</Text>
+        <Text color="white">No GitHub Actions workflows found.</Text>
       </Box>
     )
   }
@@ -76,14 +76,14 @@ export function CiTab({ report }: CiTabProps) {
         <Text bold color="cyan">
           WORKFLOWS
         </Text>
-        <Text color="gray">
+        <Text color="white">
           {'Workflow'.padEnd(30)}
           {'Success'.padStart(9)}
           {'Runs'.padStart(6)}
           {'Average'.padStart(10)}
         </Text>
         {ci.workflows.length === 0 ? (
-          <Text color="gray">No completed workflow data.</Text>
+          <Text color="white">No completed workflow data.</Text>
         ) : (
           ci.workflows.map((workflow) => (
             <Box key={workflow.name}>
@@ -105,9 +105,9 @@ export function CiTab({ report }: CiTabProps) {
                 </Text>
               </Box>
               <Box width={6}>
-                <Text color="gray">{String(workflow.totalRuns).padStart(4)}</Text>
+                <Text color="white">{String(workflow.totalRuns).padStart(4)}</Text>
               </Box>
-              <Text color="gray">
+              <Text color="white">
                 {' '}
                 {duration(workflow.averageDurationSeconds)}
               </Text>
@@ -129,12 +129,12 @@ export function CiTab({ report }: CiTabProps) {
                 <Text color="red">{truncate(failure.workflowName, 25)}</Text>
               </Box>
               <Box width={18}>
-                <Text color="gray">
+                <Text color="white">
                   {failure.conclusion ?? 'failed'} on{' '}
                   {truncate(failure.branch ?? 'unknown', 8)}
                 </Text>
               </Box>
-              <Text color="gray">
+              <Text color="white">
                 {failure.actor ? `${failure.actor}  ` : ''}
                 {relativeTime(failure.completedAt)}
               </Text>

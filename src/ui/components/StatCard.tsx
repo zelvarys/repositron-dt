@@ -26,13 +26,13 @@ export function StatCard({
       flexBasis={0}
       paddingX={1}
     >
-      <Text color="gray">{title.toUpperCase()}</Text>
+      <Text color="white">{title.toUpperCase()}</Text>
       {value ? (
         <Text bold color={tone}>
           {value}
         </Text>
       ) : null}
-      {detail ? <Text color="gray">{detail}</Text> : null}
+      {detail ? <Text color="white">{detail}</Text> : null}
       {children}
     </Box>
   )

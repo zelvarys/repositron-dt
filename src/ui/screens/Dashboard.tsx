@@ -54,7 +54,7 @@ export function Dashboard({ result, username, onBack }: DashboardProps) {
           return (
             <Box key={item.key} marginRight={1}>
               <Text
-                color={isActive ? 'black' : 'gray'}
+                color={isActive ? 'black' : 'white'}
                 backgroundColor={isActive ? 'cyan' : undefined}
                 bold={isActive}
               >
@@ -81,8 +81,8 @@ export function Dashboard({ result, username, onBack }: DashboardProps) {
       </Box>
 
       <Box marginTop={1} paddingX={1} justifyContent="space-between">
-        <Text color="gray">1-5 switch view  |  q/Esc repos  |  Ctrl+C exit</Text>
-        <Text color="gray">{result.report.scannedAt.slice(0, 19).replace('T', ' ')}</Text>
+        <Text color="white">1-5 switch view  |  q/Esc repos  |  Ctrl+C exit</Text>
+        <Text color="white">{result.report.scannedAt.slice(0, 19).replace('T', ' ')}</Text>
       </Box>
     </Box>
   )

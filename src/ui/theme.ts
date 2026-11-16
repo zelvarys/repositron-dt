@@ -1,9 +1,9 @@
-export type Tone = 'green' | 'yellow' | 'red' | 'cyan' | 'gray' | 'magenta'
+export type Tone = 'green' | 'yellow' | 'red' | 'cyan' | 'white' | 'magenta' | 'gray'
 
 export const border = 'round' as const
 
 export function scoreColor(value: number | null): Tone {
-  if (value === null) return 'gray'
+  if (value === null) return 'white'
   if (value >= 75) return 'green'
   if (value >= 45) return 'yellow'
   return 'red'
@@ -15,7 +15,7 @@ export function severityColor(
   if (severity === 'critical' || severity === 'high') return 'red'
   if (severity === 'moderate') return 'yellow'
   if (severity === 'low') return 'cyan'
-  return 'gray'
+  return 'white'
 }
 
 export function riskColor(

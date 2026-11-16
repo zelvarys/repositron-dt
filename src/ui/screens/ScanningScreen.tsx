@@ -58,7 +58,7 @@ export function ScanningScreen({
           <Text bold color="cyan">
             SCANNING {repo?.full_name ?? 'repository'}
           </Text>
-          <Text color="gray">{elapsed}s elapsed</Text>
+          <Text color="white">{elapsed}s elapsed</Text>
         </Box>
         <Box marginTop={1}>
           <ProgressBar
@@ -75,10 +75,10 @@ export function ScanningScreen({
             return (
               <Text
                 key={item.label}
-                color={done ? 'green' : active ? 'cyan' : 'gray'}
+                color={done ? 'green' : active ? 'cyan' : 'white'}
               >
                 {done ? '[x]' : active ? '[>]' : '[ ]'} {item.label}
-                {active ? <Text color="gray">  {message}</Text> : null}
+                {active ? <Text color="white">  {message}</Text> : null}
               </Text>
             )
           })}
@@ -88,7 +88,7 @@ export function ScanningScreen({
           <Text>
             <Spinner type="dots" /> {message}
           </Text>
-          <Text color="gray">Ctrl+C exits</Text>
+          <Text color="white">Ctrl+C exits</Text>
         </Box>
       </Box>
     </Box>
