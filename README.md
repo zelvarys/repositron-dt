@@ -85,22 +85,20 @@ user config directory, protected by your operating system account permissions.
 +------------------------------------------------------------------------------+
 | [ 1 Overview ]  2 Tools   3 Activity   4 Dependencies   5 CI                 |
 | +--------------------------------------------------------------------------+ |
-| | REPOSITORY HEALTH                          Activity  █████████████░░ 82   | |
-| | 84.2 / 100                                 Workflow  ████████████░░░ 78   | |
-| | healthy                                    Spread    ██████████░░░░░ 71   | |
-| |                                            Quality   ███████████░░░░ 74   | |
+| | REPOSITORY HEALTH              Activity ━━━━━━━━━━━━━━━─── 82            | |
+| | 84.2 / 100                     Workflow ━━━━━━━━━━━━━━──── 78            | |
+| | healthy                        Spread   ━━━━━━━━━━━━━───── 71            | |
+| |                               Quality  ━━━━━━━━━━━━━───── 74            | |
 | +--------------------------------------------------------------------------+ |
 | +---------------------------------+  +-------------------------------------+ |
 | | COMMIT ACTIVITY                 |  | TOOL ADOPTION                       | |
 | | 24 commits / 30d                |  | 8/13 detected                       | |
-| | 7 contributors                  |  | ██████████████░░░░░░  73%           | |
-| | ▁▂▅▃█▂▁▃▅█▂▁▃                    |  | 11 relevant to this stack           | |
+| | 7 contributors  |  38.2% top 1  |  | 11 relevant to this stack           | |
 | +---------------------------------+  +-------------------------------------+ |
 | +---------------------------------+  +-------------------------------------+ |
 | | DEPENDENCIES                    |  | CONTRIBUTOR CONCENTRATION           | |
 | | 46 direct                       |  | 38.2% top 1                         | |
-| | 46 checked                      |  | Gini 0.41  |  top 3 71%             | |
-| | 7 outdated  |  46 checked     |  | ● MODERATE RISK                     | |
+| | 7 outdated  |  46 checked       |  | Gini 0.41  |  top 3 71%             | |
 | +---------------------------------+  +-------------------------------------+ |
 +------------------------------------------------------------------------------+
 | 1-5 switch view  |  q/Esc repos  |  Ctrl+C exit          2026-11-16 01:42:11 |
