@@ -177,19 +177,9 @@ export type ParsedDependency = {
   version: string
 }
 
-export type DependencySeverity = 'low' | 'moderate' | 'high' | 'critical'
-
-export type DependencyAdvisory = {
-  id: string
-  severity: DependencySeverity | null
-}
-
 export type CheckedDependency = ParsedDependency & {
   latestVersion: string | null
   outdated: boolean
-  advisoryCount: number
-  maxSeverity: DependencySeverity | null
-  advisories: DependencyAdvisory[]
   registryUrl: string
 }
 
@@ -199,8 +189,6 @@ export type DependencySummary = {
   partial: boolean
   checked: number
   outdated: number
-  advisoryCount: number
-  severity: Record<DependencySeverity, number>
   checkedAt: string | null
 }
 

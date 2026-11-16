@@ -77,8 +77,8 @@ export function OverviewTab({ report }: OverviewTabProps) {
         <StatCard
           title="Dependencies"
           value={`${compactNumber(deps.total)} direct`}
-          detail={`${deps.outdated} outdated  |  ${deps.advisoryCount} advisories`}
-          tone={deps.advisoryCount > 0 ? 'red' : deps.outdated > 0 ? 'yellow' : 'green'}
+          detail={`${deps.outdated} outdated  |  ${deps.checked} checked`}
+          tone={deps.outdated > 0 ? 'yellow' : 'green'}
         />
         <Box width={1} />
         <StatCard

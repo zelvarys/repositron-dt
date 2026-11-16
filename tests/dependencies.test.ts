@@ -80,7 +80,6 @@ describe('summarizeDependencies', () => {
     expect(summary.partial).toBe(false)
     expect(summary.checked).toBe(0)
     expect(summary.outdated).toBe(0)
-    expect(summary.advisoryCount).toBe(0)
     expect(summary.checkedAt).toBeNull()
   })
 })

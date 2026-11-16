@@ -335,8 +335,6 @@ export function summarizeDependencies(parsed: ParseResult): DependencySummary {
     partial: parsed.partial,
     checked: 0,
     outdated: 0,
-    advisoryCount: 0,
-    severity: { low: 0, moderate: 0, high: 0, critical: 0 },
     checkedAt: null,
   };
 }

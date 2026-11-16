@@ -7,19 +7,18 @@ import type {
 } from '../../insights/types.js'
 import { relativeTime, truncate } from '../format.js'
 import { glyphs } from '../glyphs.js'
-import { severityColor, type Tone } from '../theme.js'
+import type { Tone } from '../theme.js'
 import { Badge } from '../components/Badge.js'
 
 type DependenciesTabProps = {
   report: RepositoryReport
 }
 
-type Mode = 'all' | 'outdated' | 'advisories'
+type Mode = 'all' | 'outdated'
 
 const MODES: Array<{ key: Mode; label: string }> = [
   { key: 'all', label: 'All' },
   { key: 'outdated', label: 'Outdated' },
-  { key: 'advisories', label: 'Advisories' },
 ]
 
 const PAGE_SIZE = 8
@@ -28,13 +27,6 @@ function statusOf(row: CheckedDependency): {
   label: string
   tone: Tone
 } {
-  if (row.advisoryCount > 0) {
-    const severity = row.maxSeverity?.toUpperCase() ?? 'ADVISORY'
-    return {
-      label: `${row.advisoryCount} ${severity}`,
-      tone: severityColor(row.maxSeverity),
-    }
-  }
   if (row.outdated) return { label: 'OUTDATED', tone: 'yellow' }
   if (row.latestVersion) return { label: 'current', tone: 'green' }
   return { label: 'unverified', tone: 'white' }
@@ -44,10 +36,11 @@ export function DependenciesTab({ report }: DependenciesTabProps) {
   const { dependencies } = report
   const [mode, setMode] = useState<Mode>('all')
   const [page, setPage] = useState(0)
+  const current = Math.max(0, dependencies.checked - dependencies.outdated)
+  const unverified = Math.max(0, dependencies.total - dependencies.checked)
 
   const filtered = dependencies.rows.filter((row) => {
     if (mode === 'outdated') return row.outdated
-    if (mode === 'advisories') return row.advisoryCount > 0
     return true
   })
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
@@ -103,21 +96,15 @@ export function DependenciesTab({ report }: DependenciesTabProps) {
           </Text>
         </Box>
         <Box flexDirection="column">
-          <Text color="white">ADVISORIES</Text>
-          <Text bold color={dependencies.advisoryCount > 0 ? 'red' : 'green'}>
-            {dependencies.advisoryCount}
+          <Text color="white">CURRENT</Text>
+          <Text bold color="green">
+            {current}
           </Text>
         </Box>
         <Box flexDirection="column">
-          <Text color="white">CRITICAL / HIGH</Text>
-          <Text bold color={dependencies.severity.critical > 0 ? 'red' : 'gray'}>
-            {dependencies.severity.critical} / {dependencies.severity.high}
-          </Text>
-        </Box>
-        <Box flexDirection="column">
-          <Text color="white">MODERATE / LOW</Text>
-          <Text bold color={dependencies.severity.moderate > 0 ? 'yellow' : 'gray'}>
-            {dependencies.severity.moderate} / {dependencies.severity.low}
+          <Text color="white">UNVERIFIED</Text>
+          <Text bold color={unverified > 0 ? 'white' : 'green'}>
+            {unverified}
           </Text>
         </Box>
       </Box>
@@ -155,42 +142,28 @@ export function DependenciesTab({ report }: DependenciesTabProps) {
           visible.map((row) => {
             const status = statusOf(row)
             return (
-              <Box key={`${row.ecosystem}:${row.name}`} flexDirection="column">
-                <Box>
-                  <Box width={27}>
-                    <Text>{truncate(row.name, 26)}</Text>
-                  </Box>
-                  <Box width={10}>
-                    <Text color="white">{row.ecosystem}</Text>
-                  </Box>
-                  <Box width={13}>
-                    <Text color="white">
-                      {row.version === ANY_VERSION
-                        ? 'any'
-                        : truncate(row.version, 12)}
-                    </Text>
-                  </Box>
-                  <Box width={13}>
-                    <Text color="white">
-                      {row.latestVersion
-                        ? truncate(row.latestVersion, 12)
-                        : 'unknown'}
-                    </Text>
-                  </Box>
-                  <Text color={status.tone}>{status.label}</Text>
+              <Box key={`${row.ecosystem}:${row.name}`}>
+                <Box width={27}>
+                  <Text>{truncate(row.name, 26)}</Text>
                 </Box>
-                {row.advisoryCount > 0 ? (
+                <Box width={10}>
+                  <Text color="white">{row.ecosystem}</Text>
+                </Box>
+                <Box width={13}>
                   <Text color="white">
-                    {' '.repeat(27)}
-                    {truncate(
-                      row.advisories
-                        .slice(0, 3)
-                        .map((advisory) => advisory.id)
-                        .join(', '),
-                      48,
-                    )}
+                    {row.version === ANY_VERSION
+                      ? 'any'
+                      : truncate(row.version, 12)}
                   </Text>
-                ) : null}
+                </Box>
+                <Box width={13}>
+                  <Text color="white">
+                    {row.latestVersion
+                      ? truncate(row.latestVersion, 12)
+                      : 'unknown'}
+                  </Text>
+                </Box>
+                <Text color={status.tone}>{status.label}</Text>
               </Box>
             )
           })
@@ -203,9 +176,9 @@ export function DependenciesTab({ report }: DependenciesTabProps) {
           {safePage + 1}/{totalPages}
         </Text>
         {dependencies.partial ? (
-          <Badge label="partial registry or advisory data" tone="yellow" />
+          <Badge label="partial registry data" tone="yellow" />
         ) : (
-          <Text color="green">{glyphs.dot} registry and advisory lookups complete</Text>
+          <Text color="green">{glyphs.dot} registry lookups complete</Text>
         )}
       </Box>
     </Box>

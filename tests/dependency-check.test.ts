@@ -28,9 +28,9 @@ describe('semver', () => {
 })
 
 describe('checkDependencies', () => {
-  it('adds latest versions, outdated state, and OSV advisories', async () => {
+  it('adds latest versions and outdated state', async () => {
     const fetchMock = vi.fn(
-      async (input: string | URL | Request, init?: RequestInit) => {
+      async (input: string | URL | Request) => {
         const url = typeof input === 'string' ? input : input.toString()
 
         if (url === 'https://registry.npmjs.org/react-check/latest') {
@@ -44,36 +44,6 @@ describe('checkDependencies', () => {
         }
         if (url === 'https://registry.npmjs.org/unpinned-check/latest') {
           return jsonResponse({ version: '4.0.0' })
-        }
-        if (url === 'https://api.osv.dev/v1/querybatch') {
-          const body = JSON.parse(String(init?.body)) as {
-            queries: Array<{ package: { name: string } }>
-          }
-          return jsonResponse({
-            results: body.queries.map((query) => {
-              if (query.package.name === 'react-check') {
-                return {
-                  vulns: [
-                    {
-                      id: 'GHSA-react',
-                      database_specific: { severity: 'HIGH' },
-                    },
-                  ],
-                }
-              }
-              if (query.package.name === 'requests-check') {
-                return {
-                  vulns: [
-                    {
-                      id: 'GHSA-requests',
-                      database_specific: { severity: 'moderate' },
-                    },
-                  ],
-                }
-              }
-              return {}
-            }),
-          })
         }
 
         throw new Error(`Unexpected fetch: ${url}`)
@@ -93,44 +63,24 @@ describe('checkDependencies', () => {
 
     expect(report.checked).toBe(4)
     expect(report.outdated).toBe(2)
-    expect(report.advisoryCount).toBe(2)
-    expect(report.severity).toEqual({
-      low: 0,
-      moderate: 1,
-      high: 1,
-      critical: 0,
-    })
     expect(report.partial).toBe(false)
     expect(report.rows.find((row) => row.name === 'react-check')).toMatchObject({
       latestVersion: '19.0.0',
       outdated: true,
-      advisoryCount: 1,
-      maxSeverity: 'high',
     })
     expect(report.rows.find((row) => row.name === 'unpinned-check')).toMatchObject(
       {
         latestVersion: '4.0.0',
         outdated: false,
-        advisoryCount: 0,
       },
     )
-    expect(
-      fetchMock.mock.calls.filter(
-        ([url]) => String(url) === 'https://api.osv.dev/v1/querybatch',
-      ),
-    ).toHaveLength(1)
+    expect(fetchMock).toHaveBeenCalledTimes(4)
   })
 
   it('marks registry failures as partial instead of aborting the scan', async () => {
     vi.stubGlobal(
       'fetch',
-      vi.fn(async (input: string | URL | Request) => {
-        const url = typeof input === 'string' ? input : input.toString()
-        if (url.includes('registry.npmjs.org')) {
-          return jsonResponse({ error: 'nope' }, 500)
-        }
-        return jsonResponse({ results: [{}] })
-      }),
+      vi.fn(async () => jsonResponse({ error: 'nope' }, 500)),
     )
 
     const report = await checkDependencies({

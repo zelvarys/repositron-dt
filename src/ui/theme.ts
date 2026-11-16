@@ -9,15 +9,6 @@ export function scoreColor(value: number | null): Tone {
   return 'red'
 }
 
-export function severityColor(
-  severity: 'low' | 'moderate' | 'high' | 'critical' | null,
-): Tone {
-  if (severity === 'critical' || severity === 'high') return 'red'
-  if (severity === 'moderate') return 'yellow'
-  if (severity === 'low') return 'cyan'
-  return 'white'
-}
-
 export function riskColor(
   risk: 'green' | 'yellow' | 'red',
 ): 'green' | 'yellow' | 'red' {
