@@ -28,7 +28,7 @@ export function ActivityTab({ report }: ActivityTabProps) {
   )
   const weekdayTotal = activity.weekday.reduce((sum, value) => sum + value, 0)
   const weekdayCells = MONDAY_FIRST.map((day) =>
-    `${WEEKDAYS[day]![0]}${String(activity.weekday[day] ?? 0).padStart(2)}`,
+    `${WEEKDAYS[day]!.slice(0, 2)}${String(activity.weekday[day] ?? 0).padStart(2)}`,
   ).join(' ')
 
   return (
@@ -94,6 +94,7 @@ export function ActivityTab({ report }: ActivityTabProps) {
                   </Text>
                 </Box>
                 <Text color="cyan">
+                  {' '}
                   {percent(
                     weekdayTotal > 0
                       ? (contributor.commits / weekdayTotal) * 100
