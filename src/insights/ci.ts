@@ -15,8 +15,10 @@ function isFailure(conclusion: string | null): boolean {
   return conclusion === 'failure' || conclusion === 'timed_out'
 }
 
-function isDependabotWorkflow(name: string): boolean {
-  return /dependabot/i.test(name)
+export function isDependabotRun(
+  run: Pick<CiRun, 'workflowName' | 'actor'>,
+): boolean {
+  return /dependabot/i.test(run.workflowName) || /dependabot/i.test(run.actor ?? '')
 }
 
 function completedAtMs(run: CiRun): number {
@@ -48,7 +50,7 @@ export function aggregateCiHealth(
 ): CiHealth {
   const completed = runs
     .filter((run) => run.status === 'completed')
-    .filter((run) => !isDependabotWorkflow(run.workflowName))
+    .filter((run) => !isDependabotRun(run))
     .sort((a, b) => completedAtMs(b) - completedAtMs(a))
 
   const buckets = new Map<string, CiRun[]>()

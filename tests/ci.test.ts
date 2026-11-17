@@ -70,6 +70,12 @@ describe('aggregateCiHealth', () => {
         conclusion: 'failure',
       }),
       run({ runId: 3, workflowName: 'dependabot', conclusion: 'failure' }),
+      run({
+        runId: 4,
+        workflowName: 'CI',
+        actor: 'dependabot[bot]',
+        conclusion: 'failure',
+      }),
     ])
 
     expect(health.totalRuns).toBe(1)

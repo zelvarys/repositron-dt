@@ -20,7 +20,7 @@ import {
   isMergeCommit,
 } from './insights/activity.js'
 import { computeBusFactor } from './insights/bus-factor.js'
-import { aggregateCiHealth } from './insights/ci.js'
+import { aggregateCiHealth, isDependabotRun } from './insights/ci.js'
 import { collectDependencyHealth } from './insights/dependency-check.js'
 import { computeRepoHealth } from './insights/health.js'
 import {
@@ -247,7 +247,7 @@ async function fetchCiRuns(
             : null,
         url: run.html_url,
       }
-    })
+    }).filter((run) => !isDependabotRun(run))
     return {
       ciRuns,
       ciPartial: runs.length >= 300,
