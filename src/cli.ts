@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import chalk from 'chalk'
-import { render } from 'ink'
+import { render, type Instance } from 'ink'
 import meow from 'meow'
 import { createElement } from 'react'
 import { resolveAuth } from './auth/check.js'
@@ -66,7 +66,16 @@ async function authenticate(): Promise<{
 
 async function main(): Promise<void> {
   const auth = await authenticate()
-  render(createElement(App, auth))
+  let instance: Instance | null = null
+  const clearScreen = (): void => {
+    if (!instance) return
+    instance.clear()
+    if (process.stdout.isTTY) {
+      process.stdout.write('\u001B[2J\u001B[3J\u001B[H')
+    }
+  }
+
+  instance = render(createElement(App, { ...auth, clearScreen }))
 }
 
 main().catch((error: unknown) => {

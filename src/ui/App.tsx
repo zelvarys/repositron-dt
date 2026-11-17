@@ -13,6 +13,7 @@ import { Dashboard } from './screens/Dashboard.js'
 type AppProps = {
   token: string
   username: string
+  clearScreen: () => void
 }
 
 type View = 'picker' | 'scanning' | 'dashboard' | 'error'
@@ -50,7 +51,7 @@ function ErrorScreen({ message, onBack }: ErrorScreenProps) {
   )
 }
 
-export function App({ token, username }: AppProps) {
+export function App({ token, username, clearScreen }: AppProps) {
   const client = useMemo(() => new GitHubClient(token), [token])
   const [view, setView] = useState<View>('picker')
   const [scanningRepo, setScanningRepo] = useState<GitHubRepo | null>(null)
@@ -77,6 +78,7 @@ export function App({ token, username }: AppProps) {
   }
 
   const backToPicker = () => {
+    clearScreen()
     setResult(null)
     setScanningRepo(null)
     setError(null)
