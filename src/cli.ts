@@ -64,15 +64,20 @@ async function authenticate(): Promise<{
   }
 }
 
+function clearTerminal(): void {
+  if (process.stdout.isTTY) {
+    process.stdout.write('\u001B[2J\u001B[3J\u001B[H')
+  }
+}
+
 async function main(): Promise<void> {
+  clearTerminal()
   const auth = await authenticate()
   let instance: Instance | null = null
   const clearScreen = (): void => {
     if (!instance) return
     instance.clear()
-    if (process.stdout.isTTY) {
-      process.stdout.write('\u001B[2J\u001B[3J\u001B[H')
-    }
+    clearTerminal()
   }
 
   instance = render(createElement(App, { ...auth, clearScreen }))
