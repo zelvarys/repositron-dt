@@ -61,6 +61,23 @@ describe('aggregateCiHealth', () => {
     })
   })
 
+  it('excludes Dependabot workflows from CI health', () => {
+    const health = aggregateCiHealth([
+      run({ runId: 1, workflowName: 'CI' }),
+      run({
+        runId: 2,
+        workflowName: 'Dependabot Updates',
+        conclusion: 'failure',
+      }),
+      run({ runId: 3, workflowName: 'dependabot', conclusion: 'failure' }),
+    ])
+
+    expect(health.totalRuns).toBe(1)
+    expect(health.successRate).toBe(100)
+    expect(health.workflows.map((workflow) => workflow.name)).toEqual(['CI'])
+    expect(health.recentFailures).toEqual([])
+  })
+
   it('returns null when no runs have completed', () => {
     const health = aggregateCiHealth([
       run({ status: 'in_progress', conclusion: null }),

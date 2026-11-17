@@ -3,7 +3,6 @@ import type { RepositoryReport } from '../../insights/types.js'
 import { percent, relativeTime, truncate } from '../format.js'
 import { scoreColor } from '../theme.js'
 import { Badge } from '../components/Badge.js'
-import { ProgressBar } from '../components/ProgressBar.js'
 import { StatCard } from '../components/StatCard.js'
 
 type CiTabProps = {
@@ -41,15 +40,7 @@ export function CiTab({ report }: CiTabProps) {
           value={success === null ? 'n/a' : percent(success, 1)}
           detail={`${ci.totalRuns} completed runs`}
           tone={scoreColor(success)}
-        >
-          <Box marginTop={1}>
-            <ProgressBar
-              value={success ?? 0}
-              width={20}
-              color={scoreColor(success)}
-            />
-          </Box>
-        </StatCard>
+        />
         <Box width={1} />
         <StatCard
           title="Workflows"
