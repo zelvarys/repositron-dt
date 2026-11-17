@@ -214,9 +214,20 @@ export function RepoPicker({ client, username, onSelect }: RepoPickerProps) {
             </Text>
             <Box justifyContent="space-between">
               <Text color="white">
-                branch {highlighted.default_branch}  {glyphs.star}{' '}
-                {compactNumber(highlighted.stargazers_count)}  forks{' '}
-                {compactNumber(highlighted.forks_count)}
+                branch{' '}
+                <Text bold color="blue">
+                  {truncate(highlighted.default_branch, 18)}
+                </Text>
+                <Text color="blue">  {glyphs.pipe}  </Text>
+                stars{' '}
+                <Text bold color="blue">
+                  {compactNumber(highlighted.stargazers_count)}
+                </Text>
+                <Text color="blue">  {glyphs.pipe}  </Text>
+                forks{' '}
+                <Text bold color="blue">
+                  {compactNumber(highlighted.forks_count)}
+                </Text>
               </Text>
               <Text color="white">
                 updated {relativeTime(highlighted.updated_at)}
