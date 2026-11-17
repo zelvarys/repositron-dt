@@ -119,7 +119,8 @@ compact text statistics, then lists the top contributors with commit shares.
 ## CI health
 
 `aggregateCiHealth()` considers only completed workflow runs. In-progress and
-queued runs are ignored, and Dependabot workflows are excluded.
+queued runs are ignored, and runs from Dependabot are excluded by workflow
+name, actor, or workflow path.
 
 - Overall success rate: successful completed runs divided by all completed runs.
 - Per-workflow statistics use the 30 most recent completed runs for that

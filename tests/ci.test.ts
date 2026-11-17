@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { aggregateCiHealth, filterCiRuns, worstWorkflow } from '../src/insights/ci.js'
+import { isDependabotWorkflowRun } from '../src/github/fetch.js'
 import type { CiRun } from '../src/insights/types.js'
 
 function run(overrides: Partial<CiRun>): CiRun {
@@ -97,6 +98,40 @@ describe('aggregateCiHealth', () => {
     const health = aggregateCiHealth([], true, '2026-10-29T00:00:00.000Z')
     expect(health.partial).toBe(true)
     expect(health.fetchedAt).toBe('2026-10-29T00:00:00.000Z')
+  })
+})
+
+describe('isDependabotWorkflowRun', () => {
+  it('detects Dependabot runs by name, actor, or path', () => {
+    const base = {
+      id: 1,
+      name: 'CI',
+      status: 'completed',
+      conclusion: 'success',
+      head_branch: 'main',
+      actor: { login: 'alice' },
+      run_started_at: '2026-10-28T10:00:00.000Z',
+      created_at: '2026-10-28T10:00:00.000Z',
+      updated_at: '2026-10-28T10:01:00.000Z',
+      html_url: 'https://github.com/octocat/widget/actions/runs/1',
+    }
+
+    expect(isDependabotWorkflowRun({ ...base, name: 'Dependabot Updates' })).toBe(
+      true,
+    )
+    expect(
+      isDependabotWorkflowRun({
+        ...base,
+        actor: { login: 'dependabot[bot]' },
+      }),
+    ).toBe(true)
+    expect(
+      isDependabotWorkflowRun({
+        ...base,
+        path: 'dynamic/dependabot/dependabot-updates',
+      }),
+    ).toBe(true)
+    expect(isDependabotWorkflowRun(base)).toBe(false)
   })
 })
 
