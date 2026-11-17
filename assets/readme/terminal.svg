@@ -38,7 +38,7 @@
 
     <rect x="28" y="182" width="608" height="170" rx="6" fill="#0d0f14" stroke="#1d4ed8"/>
     <text x="48" y="210" font-size="13" font-weight="700" fill="#93c5fd" letter-spacing="1.2">REPOSITORY HEALTH</text>
-    <text x="48" y="254" font-size="32" font-weight="700" fill="#f5f5f4">84.2 / 100</text>
+    <text x="48" y="254" font-size="32" font-weight="700" fill="#f5f5f4">84.2<tspan dx="6" font-size="15" fill="#a1a1aa">/100</tspan></text>
     <text x="48" y="280" font-size="13" fill="#4ade80">healthy</text>
     <text x="260" y="210" font-size="13" fill="#a1a1aa">Activity</text>
     <rect x="260" y="220" width="344" height="5" rx="2.5" fill="#27272a"/>

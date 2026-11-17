@@ -41,47 +41,6 @@ dashboard. There is no database, hosted backend, or worker to run.
 Scans are local-first and intentionally bounded. The CLI README documents the
 metric definitions, limits, and development workflow.
 
-## Repository layout
-
-`main` holds this overview. The CLI lives on the `cli` branch and is cloned into
-a folder of the same name.
-
-| Branch | Contents |
-| --- | --- |
-| [`main`](https://github.com/zelvarys/repositron-dt/tree/main) | Overview, README assets, license |
-| [`cli`](https://github.com/zelvarys/repositron-dt/tree/cli) | The `repositron` npm package, tests, and docs |
-
-```sh
-git clone --branch main --single-branch https://github.com/zelvarys/repositron-dt.git repositron
-cd repositron
-git clone --branch cli --single-branch https://github.com/zelvarys/repositron-dt.git cli
-```
-
-<details>
-<summary><b>For contributors: build the CLI locally</b></summary>
-
-<br>
-
-```sh
-cd cli
-npm install
-npm run build
-node dist/cli.js
-```
-
-During development:
-
-```sh
-npm run dev
-npm test
-npm run typecheck
-```
-
-See the CLI branch for the full architecture, insight definitions, and testing
-notes.
-
-</details>
-
 ## License
 
 MIT
