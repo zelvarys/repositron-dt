@@ -1,1 +1,0 @@
-ALTER TABLE scans ADD COLUMN repo_tree JSONB;

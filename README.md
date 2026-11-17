@@ -1,18 +1,19 @@
 <p align="center">
-  <img src="public/logo.svg" width="96" height="96" alt="Repositron terminal prompt mark">
+  <img src="assets/readme/cover.svg" alt="Repositron, repository health in your terminal" width="100%">
 </p>
 
-<h1 align="center">Repositron</h1>
+<p align="center">
+  <b>An interactive terminal dashboard for GitHub repository health.</b><br>
+  Activity · tool adoption · dependencies · CI · bus factor
+</p>
 
-<p align="center">An interactive terminal dashboard for GitHub repository health.</p>
+<p align="center">
+  <a href="https://github.com/zelvarys/repositron-dt/tree/cli"><img src="https://img.shields.io/badge/source-cli_branch-60a5fa?style=for-the-badge&labelColor=09090b" alt="CLI source"></a>
+  <a href="https://www.npmjs.com/package/repositron"><img src="https://img.shields.io/npm/v/repositron?style=for-the-badge&color=60a5fa&labelColor=09090b" alt="npm version"></a>
+  <a href="https://github.com/zelvarys/repositron-dt/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-4ade80?style=for-the-badge&labelColor=09090b" alt="MIT license"></a>
+</p>
 
-Repositron is a local-first CLI. It logs in to GitHub once, lets you pick a
-repository you own or have contributed to, scans it on demand, and presents
-adoption, activity, bus factor, dependency, and CI insights in a
-keyboard-driven terminal UI. There is no database, hosted backend, or worker to
-run.
-
-## Quick start
+## Run it
 
 Requires Node.js 22 or newer.
 
@@ -20,139 +21,49 @@ Requires Node.js 22 or newer.
 npx repositron
 ```
 
-On first run Repositron starts GitHub's OAuth Device Flow:
+Repositron signs in with GitHub, lists repositories you own or have contributed
+to in the last 12 months, scans one on demand, and opens a keyboard-driven
+dashboard. There is no database, hosted backend, or worker to run.
 
-1. It opens GitHub in your browser.
-2. Enter the short code shown in the terminal.
-3. Authorize the request. The token is stored locally for next time.
+<img src="assets/readme/terminal.svg" alt="Repositron terminal dashboard showing repository health, activity, dependencies, contributor concentration, tool adoption, and CI health" width="100%">
 
-The picker lists repositories you own plus repositories you contributed to in
-the last 12 months. Organization membership alone does not add a repository to
-the list.
+## What it checks
 
-## Authentication
+| Area | What you get |
+| --- | --- |
+| Repository health | One weighted score across activity, CI stability, contributor spread, and commit quality |
+| Activity | Commit ranges, weekly rhythm, weekday pulse, contributors, and commit quality |
+| Tool adoption | Up to 13 detectors, including test runners, linters, CI, and dependency automation |
+| Bus factor | Gini coefficient plus top 1, 3, and 10 contributor shares |
+| Dependencies | Direct manifests, latest registry versions, and major-version drift |
+| CI | Workflow success rates, run counts, average duration, and recent failures |
 
-Repositron checks credentials in this order:
+Scans are local-first and intentionally bounded. The CLI README documents the
+metric definitions, limits, and development workflow.
 
-1. `GITHUB_TOKEN` or `GH_TOKEN`
-2. The saved session at `~/.config/repositron/config.json`
-3. The GitHub CLI config at `~/.config/gh/hosts.yml`
-4. GitHub OAuth Device Flow
+## Repository layout
 
-The device flow requests `public_repo`, `read:user`, and `read:org` scopes. It
-uses GitHub's public client ID by default; set
-`REPOSITRON_GITHUB_CLIENT_ID` or `GITHUB_CLIENT_ID` to use your own OAuth app.
-For local testing, `repositron --token <token>` accepts a personal access token
-without saving it.
+`main` holds this overview. The CLI lives on the `cli` branch and is cloned into
+a folder of the same name.
 
-No token is sent anywhere except the GitHub API. The saved token lives in your
-user config directory, protected by your operating system account permissions.
-
-## Screenshots
-
-### Repository picker
-
-```text
-+------------------------------------------------------------------------------+
-| [>_] REPOSITRON                                                               |
-+------------------------------------------------------------------------------+
-| FIND A REPOSITORY                                42 owned or contributed    |
-| +--------------------------------------------------------------------------+ |
-| | > Search repositories                                                    | |
-| +--------------------------------------------------------------------------+ |
-| +--------------------------------------------------------------------------+ |
-| | Repositories                                Press arrow keys to move     | |
-| | ▸ octocat/widget                     1234 stars  TypeScript              | |
-| |   octocat/api                         210 stars  Go                      | |
-| |   octocat/notes                        18 stars  Python                  | |
-| +--------------------------------------------------------------------------+ |
-| +--------------------------------------------------------------------------+ |
-| | octocat/widget                                             ● public      | |
-| | An interactive terminal dashboard for repository health.                 | |
-| | branch main  •  stars 1.2k  •  forks 84              updated 2d ago      | |
-| +--------------------------------------------------------------------------+ |
-+------------------------------------------------------------------------------+
-| 42 matches  |  Press Esc leaves search   Press Enter to scan  |  Ctrl+C exits |
-+------------------------------------------------------------------------------+
-```
-
-### Dashboard
-
-```text
-+------------------------------------------------------------------------------+
-| [>_] REPOSITRON                                                      OVERVIEW |
-| octocat/widget                                         1234 stars  TypeScript |
-+------------------------------------------------------------------------------+
-| [ 1 Overview ]  2 Tools   3 Activity   4 Dependencies   5 CI                 |
-| +--------------------------------------------------------------------------+ |
-| | REPOSITORY HEALTH              Activity ━━━━━━━━━━━━━━━─── 82            | |
-| | 84.2 / 100                     Workflow ━━━━━━━━━━━━━━──── 78            | |
-| | healthy                        Spread   ━━━━━━━━━━━━━───── 71            | |
-| |                               Quality  ━━━━━━━━━━━━━───── 74            | |
-| +--------------------------------------------------------------------------+ |
-| +---------------------------------+  +-------------------------------------+ |
-| | COMMIT ACTIVITY                 |  | TOOL ADOPTION                       | |
-| | 24 commits / 30d                |  | 8/13 detected                       | |
-| | 7 contributors  |  38.2% top 1  |  | 11 relevant to this stack           | |
-| +---------------------------------+  +-------------------------------------+ |
-| +---------------------------------+  +-------------------------------------+ |
-| | DEPENDENCIES                    |  | CONTRIBUTOR CONCENTRATION           | |
-| | 46 direct                       |  | 38.2% top 1                         | |
-| | 7 outdated  |  46 checked       |  | Gini 0.41  |  top 3 71%             | |
-| +---------------------------------+  +-------------------------------------+ |
-+------------------------------------------------------------------------------+
-| Press 1-5: tabs  |  Press q/Esc: repos  |  Ctrl+C exits   2026-11-16 01:42:11 |
-+------------------------------------------------------------------------------+
-```
-
-## Controls
-
-| Context | Key | Action |
-| --- | --- | --- |
-| Repository picker | Type or `/` | Filter repositories |
-| Repository picker | Up / Down | Move selection |
-| Repository picker | Enter | Scan selected repository |
-| Repository picker | Esc | Leave the search field |
-| Dashboard | `1`-`5` | Switch tabs |
-| Dependencies tab | `f` | Cycle all / outdated |
-| Dependencies tab | Left / Right | Page through rows |
-| Dashboard | `q` / Esc | Return to the repository picker |
-| Any screen | Ctrl+C | Exit |
-
-## What gets scanned
-
-- Tool adoption across 13 detectors: Jest, ESLint, Prettier, pytest, Black,
-  Ruff, pre-commit, GitHub Actions, Dependabot, Renovate, `go test`,
-  golangci-lint, and PHPUnit.
-- Bus factor and contributor concentration using the Gini coefficient and
-  top 1/3/10 shares.
-- Commit activity by day, week, and contributor over 30, 90, 180, and 365 day
-  windows.
-- GitHub Actions success rates, average durations, and recent failures.
-- Direct dependencies parsed from local manifests such as `package.json`,
-  `requirements.txt`, `pyproject.toml`, `go.mod`, `Gemfile`, and
-  `composer.json`.
-- Latest versions from npm, PyPI, the Go module proxy, RubyGems, and Packagist.
-
-Scans are intentionally bounded to keep the CLI responsive: the 30 most recent
-commit diffs, up to 500 commits, up to 200 contributors, up to 300 workflow
-runs, and up to 300 parsed dependencies. Registry lookups run eight at a time
-with a 10 second timeout per request. See
-[docs/insights.md](docs/insights.md) for the metric definitions and their
-limitations.
-
-## Terminal rendering
-
-The UI uses ANSI colors, rounded borders, thin meters, and Unicode glyphs. It
-does not print emojis. Secondary text is rendered in white rather than dark
-grey so it stays readable on dark terminals. Set `REPOSITRON_ASCII=1` to swap
-meters and marker glyphs for ASCII equivalents on limited terminals.
-
-## Install from source
+| Branch | Contents |
+| --- | --- |
+| [`main`](https://github.com/zelvarys/repositron-dt/tree/main) | Overview, README assets, license |
+| [`cli`](https://github.com/zelvarys/repositron-dt/tree/cli) | The `repositron` npm package, tests, and docs |
 
 ```sh
-git clone https://github.com/zelvarys/repositron.git
+git clone --branch main --single-branch https://github.com/zelvarys/repositron-dt.git repositron
 cd repositron
+git clone --branch cli --single-branch https://github.com/zelvarys/repositron-dt.git cli
+```
+
+<details>
+<summary><b>For contributors: build the CLI locally</b></summary>
+
+<br>
+
+```sh
+cd cli
 npm install
 npm run build
 node dist/cli.js
@@ -166,9 +77,10 @@ npm test
 npm run typecheck
 ```
 
-See [docs/development.md](docs/development.md) for testing with a personal
-access token and [docs/architecture.md](docs/architecture.md) for the code
-layout.
+See the CLI branch for the full architecture, insight definitions, and testing
+notes.
+
+</details>
 
 ## License
 
