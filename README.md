@@ -1,10 +1,6 @@
-<p align="center">
-  <img src="public/logo.svg" width="96" height="96" alt="Repositron terminal prompt mark">
-</p>
+# Repositron
 
-<h1 align="center">Repositron</h1>
-
-<p align="center">An interactive terminal dashboard for GitHub repository health.</p>
+An interactive terminal dashboard for GitHub repository health.
 
 Repositron is a local-first CLI. It logs in to GitHub once, lets you pick a
 repository you own or have contributed to, scans it on demand, and presents
@@ -48,77 +44,6 @@ without saving it.
 No token is sent anywhere except the GitHub API. The saved token lives in your
 user config directory, protected by your operating system account permissions.
 
-## Screenshots
-
-### Repository picker
-
-```text
-+------------------------------------------------------------------------------+
-| [>_] REPOSITRON                                                               |
-+------------------------------------------------------------------------------+
-| FIND A REPOSITORY                                42 owned or contributed    |
-| +--------------------------------------------------------------------------+ |
-| | > Search repositories                                                    | |
-| +--------------------------------------------------------------------------+ |
-| +--------------------------------------------------------------------------+ |
-| | Repositories                                Press arrow keys to move     | |
-| | ▸ octocat/widget                     1234 stars  TypeScript              | |
-| |   octocat/api                         210 stars  Go                      | |
-| |   octocat/notes                        18 stars  Python                  | |
-| +--------------------------------------------------------------------------+ |
-| +--------------------------------------------------------------------------+ |
-| | octocat/widget                                             ● public      | |
-| | An interactive terminal dashboard for repository health.                 | |
-| | branch main  •  stars 1.2k  •  forks 84              updated 2d ago      | |
-| +--------------------------------------------------------------------------+ |
-+------------------------------------------------------------------------------+
-| 42 matches  |  Press Esc leaves search   Press Enter to scan  |  Ctrl+C exits |
-+------------------------------------------------------------------------------+
-```
-
-### Dashboard
-
-```text
-+------------------------------------------------------------------------------+
-| [>_] REPOSITRON                                                      OVERVIEW |
-| octocat/widget                                         1234 stars  TypeScript |
-+------------------------------------------------------------------------------+
-| [ 1 Overview ]  2 Tools   3 Activity   4 Dependencies   5 CI                 |
-| +--------------------------------------------------------------------------+ |
-| | REPOSITORY HEALTH              Activity ━━━━━━━━━━━━━━━─── 82            | |
-| | 84.2 / 100                     Workflow ━━━━━━━━━━━━━━──── 78            | |
-| | healthy                        Spread   ━━━━━━━━━━━━━───── 71            | |
-| |                               Quality  ━━━━━━━━━━━━━───── 74            | |
-| +--------------------------------------------------------------------------+ |
-| +---------------------------------+  +-------------------------------------+ |
-| | COMMIT ACTIVITY                 |  | TOOL ADOPTION                       | |
-| | 24 commits / 30d                |  | 8/13 detected                       | |
-| | 7 contributors  |  38.2% top 1  |  | 11 relevant to this stack           | |
-| +---------------------------------+  +-------------------------------------+ |
-| +---------------------------------+  +-------------------------------------+ |
-| | DEPENDENCIES                    |  | CONTRIBUTOR CONCENTRATION           | |
-| | 46 direct                       |  | 38.2% top 1                         | |
-| | 7 outdated  |  46 checked       |  | Gini 0.41  |  top 3 71%             | |
-| +---------------------------------+  +-------------------------------------+ |
-+------------------------------------------------------------------------------+
-| Press 1-5: tabs  |  Press q/Esc: repos  |  Ctrl+C exits   2026-11-16 01:42:11 |
-+------------------------------------------------------------------------------+
-```
-
-## Controls
-
-| Context | Key | Action |
-| --- | --- | --- |
-| Repository picker | Type or `/` | Filter repositories |
-| Repository picker | Up / Down | Move selection |
-| Repository picker | Enter | Scan selected repository |
-| Repository picker | Esc | Leave the search field |
-| Dashboard | `1`-`5` | Switch tabs |
-| Dependencies tab | `f` | Cycle all / outdated |
-| Dependencies tab | Left / Right | Page through rows |
-| Dashboard | `q` / Esc | Return to the repository picker |
-| Any screen | Ctrl+C | Exit |
-
 ## What gets scanned
 
 - Tool adoption across 13 detectors: Jest, ESLint, Prettier, pytest, Black,
@@ -151,7 +76,7 @@ meters and marker glyphs for ASCII equivalents on limited terminals.
 ## Install from source
 
 ```sh
-git clone https://github.com/zelvarys/repositron.git
+git clone --branch cli --single-branch https://github.com/zelvarys/repositron-dt.git repositron
 cd repositron
 npm install
 npm run build
