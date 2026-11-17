@@ -81,7 +81,7 @@ user config directory, protected by your operating system account permissions.
 ```text
 +------------------------------------------------------------------------------+
 | [>_] REPOSITRON                                                      OVERVIEW |
-| github.com/octocat/widget                              1234 stars  TypeScript |
+| octocat/widget                                         1234 stars  TypeScript |
 +------------------------------------------------------------------------------+
 | [ 1 Overview ]  2 Tools   3 Activity   4 Dependencies   5 CI                 |
 | +--------------------------------------------------------------------------+ |
