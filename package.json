@@ -3,6 +3,10 @@
   "version": "0.2.0",
   "description": "Interactive terminal dashboard that scans GitHub repositories and surfaces activity, dependencies, workflow health, bus factor, and tool adoption",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zelvarys/repositron-dt.git"
+  },
   "type": "module",
   "bin": {
     "repositron": "./dist/cli.js"
