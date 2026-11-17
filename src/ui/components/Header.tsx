@@ -1,4 +1,5 @@
 import { Box, Text } from 'ink'
+import Link from 'ink-link'
 import type { GitHubRepo } from '../../github/repos.js'
 import { border } from '../theme.js'
 
@@ -11,6 +12,7 @@ type HeaderProps = {
 export function Header({ repo, languages, tab }: HeaderProps) {
   const languageText =
     languages && languages.length > 0 ? languages.join(' / ') : 'unknown'
+  const url = repo ? `https://github.com/${repo.full_name}` : null
 
   return (
     <Box
@@ -25,9 +27,9 @@ export function Header({ repo, languages, tab }: HeaderProps) {
         </Text>
         <Text color="white">{tab ? tab.toUpperCase() : ' '}</Text>
       </Box>
-      {repo ? (
+      {repo && url ? (
         <Box justifyContent="space-between">
-          <Box width={30} />
+          <Link url={url}>{`github.com/${repo.full_name}`}</Link>
           <Text color="white">
             {repo.private ? <Text color="yellow">private  </Text> : null}
             {repo.stargazers_count} stars  {languageText}
