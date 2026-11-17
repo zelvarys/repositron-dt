@@ -5,24 +5,25 @@
 ## Type of change
 
 - [ ] Bug fix
-- [ ] New feature
+- [ ] New detector or insight
+- [ ] TUI change
 - [ ] Refactor
 - [ ] Documentation
 - [ ] Dependency or tooling update
 
 ## Verification
 
-- [ ] `npm run typecheck:all`
-- [ ] `npm run lint`
+- [ ] `npm run typecheck`
 - [ ] `npm test`
 - [ ] `npm run build`
 
 ## Screenshots
 
-<!-- Add before/after screenshots for UI changes. -->
+<!-- Paste terminal output or an ASCII capture for UI changes. -->
 
 ## Checklist
 
 - [ ] I added or updated tests for the changed behavior.
 - [ ] I updated documentation where needed.
+- [ ] Terminal output uses ASCII only and contains no emojis.
 - [ ] I checked that no secrets or credentials are included.

@@ -1,50 +1,63 @@
-import type { ScanContext, CommitInfo } from '../../server/modules/scans/scan.context.js';
+import type {
+  CommitFile,
+  CommitInfo,
+  ContributorInfo,
+  ScanContext,
+} from '../../src/insights/context.js'
+import type { CiRun } from '../../src/insights/types.js'
 
-export type ContextOptions = {
-  scanId?: string;
-  repoId?: string;
-  owner?: string;
-  name?: string;
-  defaultBranch?: string;
-  rootFiles?: string[];
-  configFiles?: Record<string, string>;
-  workflowFiles?: string[];
-  commits?: CommitInfo[];
-  contributors?: Array<{ login: string; contributions: number }>;
-};
-
-export function buildScanContext(opts: ContextOptions = {}): ScanContext {
-  return {
-    scanId: opts.scanId ?? 'scan-1',
-    repoId: opts.repoId ?? 'repo-1',
-    owner: opts.owner ?? 'test',
-    name: opts.name ?? 'test-repo',
-    defaultBranch: opts.defaultBranch ?? 'main',
-    fetchedAt: new Date('2026-01-01T00:00:00Z').toISOString(),
-    commits: opts.commits ?? [],
-    contributors: opts.contributors ?? [],
-    rootFiles: opts.rootFiles ?? [],
-    configFiles: opts.configFiles ?? {},
-    workflowFiles: opts.workflowFiles ?? [],
-  };
+type ContextOptions = {
+  owner?: string
+  name?: string
+  defaultBranch?: string
+  rootFiles?: string[]
+  configFiles?: Record<string, string>
+  workflowFiles?: string[]
+  commits?: CommitInfo[]
+  commitHistory?: CommitInfo[]
+  contributors?: ContributorInfo[]
+  ciRuns?: CiRun[]
 }
 
-export function buildCommit(opts: {
-  sha?: string;
-  authorLogin?: string | null;
-  filenames?: string[];
-  message?: string;
-}): CommitInfo {
+export function buildContext(options: ContextOptions = {}): ScanContext {
   return {
-    sha: opts.sha ?? 'abc123',
-    authorLogin: opts.authorLogin ?? null,
-    message: opts.message ?? 'chore: test',
-    date: new Date('2026-01-01T00:00:00Z').toISOString(),
-    files: (opts.filenames ?? []).map((f) => ({
-      filename: f,
-      status: 'modified',
-      additions: 1,
-      deletions: 0,
-    })),
-  };
+    owner: options.owner ?? 'acme',
+    name: options.name ?? 'widget',
+    defaultBranch: options.defaultBranch ?? 'main',
+    fetchedAt: new Date('2026-10-29T12:00:00.000Z').toISOString(),
+    commits: options.commits ?? [],
+    commitHistory: options.commitHistory ?? options.commits ?? [],
+    contributors: options.contributors ?? [],
+    rootFiles: options.rootFiles ?? [],
+    configFiles: options.configFiles ?? {},
+    workflowFiles: options.workflowFiles ?? [],
+    ciRuns: options.ciRuns ?? [],
+    ciPartial: false,
+    ciError: null,
+  }
+}
+
+export function buildCommit(options: {
+  sha?: string
+  authorLogin?: string | null
+  authorName?: string | null
+  message?: string
+  date?: string
+  filenames?: string[]
+}): CommitInfo {
+  const files: CommitFile[] = (options.filenames ?? []).map((filename) => ({
+    filename,
+    status: 'modified',
+    additions: 1,
+    deletions: 0,
+  }))
+
+  return {
+    sha: options.sha ?? 'abc123',
+    authorLogin: options.authorLogin ?? null,
+    authorName: options.authorName ?? null,
+    message: options.message ?? 'chore: update',
+    date: options.date ?? new Date('2026-10-29T00:00:00.000Z').toISOString(),
+    files,
+  }
 }
