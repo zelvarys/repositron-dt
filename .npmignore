@@ -1,0 +1,7 @@
+legacy/
+src/
+tests/
+.github/
+tsconfig.json
+vitest.config.ts
+*.test.ts

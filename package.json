@@ -8,14 +8,10 @@
     "repositron": "./dist/cli.js"
   },
   "files": [
-    "dist",
-    "docs",
-    "public",
-    "README.md",
-    "LICENSE"
+    "dist"
   ],
   "engines": {
-    "node": ">=22"
+    "node": ">=20"
   },
   "keywords": [
     "cli",
