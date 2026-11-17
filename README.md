@@ -69,7 +69,7 @@ user config directory, protected by your operating system account permissions.
 | +--------------------------------------------------------------------------+ |
 | | octocat/widget                                             ● public      | |
 | | An interactive terminal dashboard for repository health.                 | |
-| | branch main  ★ 1.2k  forks 84                         updated 2d ago      | |
+| | branch main  │  stars 1.2k  │  forks 84              updated 2d ago      | |
 | +--------------------------------------------------------------------------+ |
 +------------------------------------------------------------------------------+
 | 42 matches  |  Press Esc leaves search   Press Enter to scan  |  Ctrl+C exits |
@@ -81,7 +81,7 @@ user config directory, protected by your operating system account permissions.
 ```text
 +------------------------------------------------------------------------------+
 | [>_] REPOSITRON                                                      OVERVIEW |
-| github.com/octocat/widget                              1234 stars  TypeScript |
+|                                                        1234 stars  TypeScript |
 +------------------------------------------------------------------------------+
 | [ 1 Overview ]  2 Tools   3 Activity   4 Dependencies   5 CI                 |
 | +--------------------------------------------------------------------------+ |
