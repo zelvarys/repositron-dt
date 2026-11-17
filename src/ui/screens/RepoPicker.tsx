@@ -218,12 +218,12 @@ export function RepoPicker({ client, username, onSelect }: RepoPickerProps) {
                 <Text bold color="blue">
                   {truncate(highlighted.default_branch, 18)}
                 </Text>
-                <Text color="blue">  {glyphs.pipe}  </Text>
+                <Text color="blue">  {glyphs.bullet}  </Text>
                 stars{' '}
                 <Text bold color="blue">
                   {compactNumber(highlighted.stargazers_count)}
                 </Text>
-                <Text color="blue">  {glyphs.pipe}  </Text>
+                <Text color="blue">  {glyphs.bullet}  </Text>
                 forks{' '}
                 <Text bold color="blue">
                   {compactNumber(highlighted.forks_count)}
