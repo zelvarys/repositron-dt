@@ -63,6 +63,7 @@ export type GitHubWorkflowRun = {
   id: number
   name: string | null
   display_title?: string
+  path?: string
   status: string
   conclusion: string | null
   head_branch: string | null
@@ -212,6 +213,12 @@ export async function fetchRepoTree(
   }
 }
 
+export function isDependabotWorkflowRun(run: GitHubWorkflowRun): boolean {
+  return [run.name, run.display_title, run.actor?.login, run.path].some(
+    (value) => value !== null && value !== undefined && /dependabot/i.test(value),
+  )
+}
+
 export async function fetchWorkflowRuns(
   client: GitHubClient,
   owner: string,
@@ -224,7 +231,7 @@ export async function fetchWorkflowRuns(
       `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/actions/runs?per_page=100&page=${page}`,
     )
     const runs = batch.workflow_runs ?? []
-    all.push(...runs)
+    all.push(...runs.filter((run) => !isDependabotWorkflowRun(run)))
     if (runs.length < 100) break
   }
   return all
