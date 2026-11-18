@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/readme/cover.svg" alt="Repositron, repository health in your terminal" width="100%">
+  <img src="assets/readme/terminal.svg" alt="Repositron terminal dashboard showing repository health, activity, dependencies, contributor concentration, tool adoption, and CI health" width="100%">
 </p>
 
 <p align="center">
@@ -24,8 +24,6 @@ npx repositron
 Repositron signs in with GitHub, lists repositories you own or have contributed
 to in the last 12 months, scans one on demand, and opens a keyboard-driven
 dashboard. There is no database, hosted backend, or worker to run.
-
-<img src="assets/readme/terminal.svg" alt="Repositron terminal dashboard showing repository health, activity, dependencies, contributor concentration, tool adoption, and CI health" width="100%">
 
 ## What it checks
 
