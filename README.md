@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/readme/terminal.svg" alt="Repositron terminal dashboard showing repository health, activity, dependencies, contributor concentration, tool adoption, and CI health" width="100%">
+  <img src="assets/readme/terminal.png" alt="Repositron terminal dashboard showing repository health, activity, dependencies, contributor concentration, tool adoption, and CI health" width="100%">
 </p>
 
 <p align="center">
