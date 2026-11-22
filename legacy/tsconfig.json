@@ -1,9 +1,0 @@
-{
-  "files": [],
-  "references": [
-    { "path": "./config/typescript/server.json" },
-    { "path": "./config/typescript/app.json" },
-    { "path": "./config/typescript/node.json" },
-    { "path": "./config/typescript/test.json" }
-  ]
-}
