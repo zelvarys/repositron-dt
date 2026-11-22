@@ -1,8 +1,10 @@
 import { Box, Text } from 'ink'
 import type { RepositoryReport } from '../../insights/types.js'
 import { percent, relativeTime, truncate } from '../format.js'
-import { scoreColor } from '../theme.js'
+import { colors, scoreColor } from '../theme.js'
+import { useViewport } from '../viewport.js'
 import { Badge } from '../components/Badge.js'
+import { Card } from '../components/Card.js'
 import { StatCard } from '../components/StatCard.js'
 
 type CiTabProps = {
@@ -18,114 +20,136 @@ function duration(value: number | null): string {
 }
 
 export function CiTab({ report }: CiTabProps) {
+  const { columns, wide, rows } = useViewport()
   const ci = report.ci
+
   if (!ci) {
     return (
-      <Box flexDirection="column">
-        <Text bold color="blue">
-          CI HEALTH
-        </Text>
-        <Text color="white">No GitHub Actions workflows found.</Text>
+      <Box flexGrow={1}>
+        <Card title="CI health">
+          <Text color={colors.muted}>
+            No GitHub Actions workflows found.
+          </Text>
+        </Card>
       </Box>
     )
   }
 
   const success = ci.successRate
+  const limit = Math.max(3, rows - 18)
+  const workflows = ci.workflows.slice(0, limit)
+  const failures = ci.recentFailures.slice(
+    0,
+    Math.max(3, Math.floor(limit / 2)),
+  )
+  const hiddenWorkflows = ci.workflows.length - workflows.length
+  const workflowWidth = wide
+    ? Math.max(18, Math.floor(columns / 2) - 32)
+    : Math.max(12, Math.floor(columns / 2) - 23)
 
   return (
-    <Box flexDirection="column">
-      <Box>
+    <Box flexDirection="column" flexGrow={1} overflow="hidden">
+      <Box flexDirection="row" columnGap={1}>
         <StatCard
           title="Success rate"
           value={success === null ? 'n/a' : percent(success, 1)}
           detail={`${ci.totalRuns} completed runs`}
           tone={scoreColor(success)}
         />
-        <Box width={1} />
         <StatCard
           title="Workflows"
           value={String(ci.workflows.length)}
           detail="tracked workflows"
-          tone="blue"
         />
-        <Box width={1} />
         <StatCard
           title="Recent failures"
           value={String(ci.recentFailures.length)}
           detail="in the last run window"
-          tone={ci.recentFailures.length > 0 ? 'red' : 'green'}
-        >
-          {ci.partial ? (
-            <Box marginTop={1}>
-              <Badge label="partial run history" tone="yellow" />
+          tone={
+            ci.recentFailures.length > 0 ? colors.red : colors.green
+          }
+        />
+      </Box>
+
+      <Box flexDirection="row" columnGap={1} marginTop={1}>
+        <Card title="Workflows" flexGrow={1}>
+          <Box height={1}>
+            <Box width={workflowWidth}>
+              <Text color={colors.dim}>Workflow</Text>
             </Box>
+            <Text color={colors.dim}>{'Success'.padStart(9)}</Text>
+            <Text color={colors.dim}>{'Runs'.padStart(7)}</Text>
+            {wide ? (
+              <Text color={colors.dim}>{'Average'.padStart(10)}</Text>
+            ) : null}
+          </Box>
+          {workflows.length === 0 ? (
+            <Text color={colors.muted}>No completed workflow data.</Text>
+          ) : (
+            workflows.map((workflow) => (
+              <Box key={workflow.name} height={1}>
+                <Box width={workflowWidth}>
+                  <Text color={colors.text} wrap="truncate-end">
+                    {truncate(workflow.name, workflowWidth - 1)}
+                  </Text>
+                </Box>
+                <Box width={9}>
+                  <Text color={scoreColor(workflow.successRate)}>
+                    {`${workflow.successRate.toFixed(0)}%`.padStart(9)}
+                  </Text>
+                </Box>
+                <Box width={7}>
+                  <Text color={colors.muted}>
+                    {String(workflow.totalRuns).padStart(7)}
+                  </Text>
+                </Box>
+                {wide ? (
+                  <Box width={10}>
+                    <Text color={colors.muted}>
+                      {duration(
+                        workflow.averageDurationSeconds,
+                      ).padStart(10)}
+                    </Text>
+                  </Box>
+                ) : null}
+              </Box>
+            ))
+          )}
+          {hiddenWorkflows > 0 ? (
+            <Text color={colors.dim}>
+              +{hiddenWorkflows} more workflows
+            </Text>
           ) : null}
-        </StatCard>
-      </Box>
+        </Card>
 
-      <Box marginTop={1} flexDirection="column">
-        <Text bold color="blue">
-          WORKFLOWS
-        </Text>
-        <Text color="white">
-          {'Workflow'.padEnd(30)}
-          {'Success'.padStart(9)}
-          {'Runs'.padStart(7)}
-          {'Average'.padStart(10)}
-        </Text>
-        {ci.workflows.length === 0 ? (
-          <Text color="white">No completed workflow data.</Text>
-        ) : (
-          ci.workflows.map((workflow) => (
-            <Box key={workflow.name}>
-              <Box width={30}>
-                <Text>{truncate(workflow.name, 29)}</Text>
+        <Box flexGrow={1} alignSelf="flex-start">
+          <Card title="Recent failures" flexGrow={1}>
+            {ci.recentFailures.length === 0 ? (
+              <Text color={colors.green}>No recent failures.</Text>
+            ) : (
+              failures.map((failure) => (
+                <Box key={failure.runId} flexDirection="column">
+                  <Text color={colors.red} wrap="truncate-end">
+                    {truncate(failure.workflowName, 28)}
+                  </Text>
+                  <Text color={colors.muted} wrap="truncate-end">
+                    {failure.conclusion ?? 'failed'} on{' '}
+                    {truncate(failure.branch ?? 'unknown', 12)} ·{' '}
+                    {relativeTime(failure.completedAt)}
+                  </Text>
+                </Box>
+              ))
+            )}
+            {ci.partial ? (
+              <Box marginTop={1}>
+                <Badge
+                  label="partial run history"
+                  tone={colors.yellow}
+                />
               </Box>
-              <Box width={9}>
-                <Text color={scoreColor(workflow.successRate)}>
-                  {`${workflow.successRate.toFixed(0)}%`.padStart(9)}
-                </Text>
-              </Box>
-              <Box width={7}>
-                <Text color="white">
-                  {String(workflow.totalRuns).padStart(7)}
-                </Text>
-              </Box>
-              <Box width={10}>
-                <Text color="white">
-                  {duration(workflow.averageDurationSeconds).padStart(10)}
-                </Text>
-              </Box>
-            </Box>
-          ))
-        )}
-      </Box>
-
-      <Box marginTop={1} flexDirection="column">
-        <Text bold color="blue">
-          RECENT FAILURES
-        </Text>
-        {ci.recentFailures.length === 0 ? (
-          <Text color="green">No recent failures.</Text>
-        ) : (
-          ci.recentFailures.slice(0, 5).map((failure) => (
-            <Box key={failure.runId}>
-              <Box width={26}>
-                <Text color="red">{truncate(failure.workflowName, 25)}</Text>
-              </Box>
-              <Box width={18}>
-                <Text color="white">
-                  {failure.conclusion ?? 'failed'} on{' '}
-                  {truncate(failure.branch ?? 'unknown', 8)}
-                </Text>
-              </Box>
-              <Text color="white">
-                {failure.actor ? `${failure.actor}  ` : ''}
-                {relativeTime(failure.completedAt)}
-              </Text>
-            </Box>
-          ))
-        )}
+            ) : null}
+          </Card>
+        </Box>
       </Box>
     </Box>
   )

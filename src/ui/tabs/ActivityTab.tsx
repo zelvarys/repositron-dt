@@ -2,7 +2,9 @@ import { Box, Text } from 'ink'
 import type { RepositoryReport } from '../../insights/types.js'
 import { recentWeeks } from '../../insights/activity.js'
 import { dayLabel, percent } from '../format.js'
-import { riskColor, riskLabel } from '../theme.js'
+import { colors, riskColor, riskLabel } from '../theme.js'
+import { useViewport } from '../viewport.js'
+import { Card } from '../components/Card.js'
 import { StatCard } from '../components/StatCard.js'
 
 type ActivityTabProps = {
@@ -13,6 +15,7 @@ const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 const MONDAY_FIRST = [1, 2, 3, 4, 5, 6, 0]
 
 export function ActivityTab({ report }: ActivityTabProps) {
+  const { wide } = useViewport()
   const activity = report.activity.ranges[90]
   const weeks = recentWeeks(
     activity.weekly,
@@ -35,24 +38,22 @@ export function ActivityTab({ report }: ActivityTabProps) {
     weekdayPairs.slice(0, 4).join('  '),
     weekdayPairs.slice(4).join('  '),
   ]
+  const contributorWidth = wide ? 20 : 16
 
   return (
-    <Box flexDirection="column">
-      <Box>
+    <Box flexDirection="column" flexGrow={1} overflow="hidden">
+      <Box flexDirection="row" columnGap={1} flexGrow={4}>
         <StatCard
           title="Last 30 days"
           value={`${report.activity.commitsLast30} commits`}
           detail={`${report.contributorCount} contributors`}
-          tone="blue"
         />
-        <Box width={1} />
         <StatCard
           title="Top contributor"
           value={percent(report.busFactor.top1Share)}
           detail={`top 3 ${percent(report.busFactor.top3Share, 0)}`}
           tone={riskColor(report.busFactor.risk)}
         />
-        <Box width={1} />
         <StatCard
           title="Concentration"
           value={`Gini ${report.busFactor.gini.toFixed(2)}`}
@@ -61,44 +62,46 @@ export function ActivityTab({ report }: ActivityTabProps) {
         />
       </Box>
 
-      <Box flexDirection="column" marginTop={1}>
-        <Box justifyContent="space-between">
-          <Text bold color="blue">
-            WEEKLY RHYTHM
-          </Text>
-          <Text color="white">last 12 weeks</Text>
-        </Box>
-        <Text>
-          <Text bold color="blue">
-            {totalWeekly}
-          </Text>
-          <Text color="white"> commits</Text>
-          <Text color="white">{`  |  ${averageWeekly}/week  |  busiest `}</Text>
-          <Text color="white">
-            {dayLabel(busiest.weekStart)} ({busiest.count})
-          </Text>
-        </Text>
+      <Box flexGrow={3} marginTop={1}>
+        <Card title="Weekly rhythm" flexGrow={1}>
+          <Box justifyContent="space-between">
+            <Text>
+              <Text bold color={colors.blue}>
+                {totalWeekly}
+              </Text>
+              <Text color={colors.muted}> commits</Text>
+              <Text color={colors.muted}>
+                {`  |  ${averageWeekly}/week  |  busiest `}
+              </Text>
+              <Text color={colors.text}>
+                {dayLabel(busiest.weekStart)} ({busiest.count})
+              </Text>
+            </Text>
+            <Text color={colors.dim}>last 12 weeks</Text>
+          </Box>
+        </Card>
       </Box>
 
-      <Box marginTop={1}>
-        <Box flexDirection="column" flexGrow={1}>
-          <Text bold color="blue">
-            TOP CONTRIBUTORS
-          </Text>
+      <Box flexDirection="row" columnGap={1} flexGrow={6} marginTop={1}>
+        <Card title="Top contributors" flexGrow={1}>
           {topContributors.length === 0 ? (
-            <Text color="white">No commits in the last 90 days.</Text>
+            <Text color={colors.muted}>
+              No commits in the last 90 days.
+            </Text>
           ) : (
             topContributors.map((contributor) => (
-              <Box key={contributor.login}>
-                <Box width={18}>
-                  <Text>{contributor.login.slice(0, 17)}</Text>
+              <Box key={contributor.login} height={1}>
+                <Box width={contributorWidth}>
+                  <Text color={colors.text} wrap="truncate-end">
+                    {contributor.login}
+                  </Text>
                 </Box>
                 <Box width={12}>
-                  <Text color="white">
+                  <Text color={colors.muted}>
                     {String(contributor.commits).padStart(4)} commits
                   </Text>
                 </Box>
-                <Text color="blue">
+                <Text color={colors.blue}>
                   {' '}
                   {percent(
                     weekdayTotal > 0
@@ -110,21 +113,17 @@ export function ActivityTab({ report }: ActivityTabProps) {
               </Box>
             ))
           )}
-        </Box>
-        <Box width={2} />
-        <Box flexDirection="column" flexGrow={1}>
-          <Text bold color="blue">
-            WEEKDAY PULSE
-          </Text>
+        </Card>
+        <Card title="Weekday pulse" flexGrow={1}>
           {weekdayLines.map((line) => (
-            <Text key={line} color="blue">
+            <Text key={line} color={colors.blue} wrap="truncate-end">
               {line}
             </Text>
           ))}
-          <Text color="white">
+          <Text color={colors.muted} wrap="truncate-end">
             {weekdayTotal} commits across the 90 day window
           </Text>
-        </Box>
+        </Card>
       </Box>
     </Box>
   )

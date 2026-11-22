@@ -1,8 +1,15 @@
 import { Box, Text } from 'ink'
-import type { RepositoryReport, ToolCategory } from '../../insights/types.js'
+import type {
+  RepositoryReport,
+  ToolCategory,
+  ToolMetric,
+} from '../../insights/types.js'
 import { toolsByCategory } from '../../insights/tools.js'
+import { truncate } from '../format.js'
 import { glyphs } from '../glyphs.js'
-import { scoreColor } from '../theme.js'
+import { colors, scoreColor } from '../theme.js'
+import { useViewport } from '../viewport.js'
+import { Card } from '../components/Card.js'
 import { ProgressBar } from '../components/ProgressBar.js'
 
 type ToolsTabProps = {
@@ -18,76 +25,130 @@ const CATEGORY_LABELS: Record<ToolCategory, string> = {
   docs: 'Documentation',
 }
 
+type ToolGroup = {
+  category: ToolCategory
+  tools: ToolMetric[]
+}
+
+function ToolRow({
+  tool,
+  nameWidth,
+  showBar,
+}: {
+  tool: ToolMetric
+  nameWidth: number
+  showBar: boolean
+}) {
+  const active = tool.detected && tool.relevant
+  return (
+    <Box height={1}>
+      <Text color={active ? colors.green : colors.dim}>
+        {glyphs.dot}{' '}
+      </Text>
+      <Box width={nameWidth}>
+        <Text color={active ? colors.text : colors.muted}>
+          {truncate(tool.name, nameWidth - 1)}
+        </Text>
+      </Box>
+      {showBar && active ? (
+        <Box width={10} marginRight={1}>
+          <ProgressBar
+            value={tool.adoptionRate}
+            width={8}
+            showPercent={false}
+            color={scoreColor(tool.adoptionRate)}
+          />
+        </Box>
+      ) : null}
+      <Text color={active ? colors.muted : colors.dim}>
+        {active
+          ? `${tool.contributorsUsing}/${tool.contributorCount}`
+          : tool.relevant
+            ? 'not detected'
+            : 'not applicable'}
+      </Text>
+    </Box>
+  )
+}
+
+function GroupColumn({
+  groups,
+  nameWidth,
+  showBar,
+}: {
+  groups: ToolGroup[]
+  nameWidth: number
+  showBar: boolean
+}) {
+  return (
+    <Box flexDirection="column" flexGrow={1} rowGap={1}>
+      {groups.map((group) => (
+        <Box key={group.category} flexDirection="column">
+          <Text bold color={colors.blueSoft} wrap="truncate-end">
+            {CATEGORY_LABELS[group.category]}
+          </Text>
+          {group.tools.map((tool) => (
+            <ToolRow
+              key={tool.name}
+              tool={tool}
+              nameWidth={nameWidth}
+              showBar={showBar}
+            />
+          ))}
+        </Box>
+      ))}
+    </Box>
+  )
+}
+
 export function ToolsTab({ report }: ToolsTabProps) {
+  const { columns, wide } = useViewport()
   const tools = report.metrics.tools
   const detected = tools.filter((tool) => tool.detected).length
   const adoption = report.metrics.adoptionScore
+  const groups = toolsByCategory(tools)
+  const left = groups.filter((_, index) => index % 2 === 0)
+  const right = groups.filter((_, index) => index % 2 === 1)
+  const showBar = wide && columns >= 110
+  const nameWidth = Math.max(12, Math.floor(columns / 2) - 22)
+  const summaryWidth = Math.max(12, Math.min(40, columns - 42))
 
   return (
-    <Box flexDirection="column">
-      <Box justifyContent="space-between">
-        <Box flexDirection="column">
-          <Text bold color="blue">
-            TOOL ADOPTION
-          </Text>
-          <Text color="white">
+    <Box flexDirection="column" overflow="hidden">
+      <Card title="Tool adoption" borderColor={colors.active}>
+        <Box justifyContent="space-between">
+          <Text bold color={colors.text}>
             {detected} of {tools.length} tools detected
           </Text>
+          <Text color={colors.muted} wrap="truncate-end">
+            weighted adoption
+          </Text>
         </Box>
-        <Box flexDirection="column" alignItems="flex-end">
-          <Text color="white">weighted adoption</Text>
-          <ProgressBar
-            value={adoption}
-            width={18}
-            color={scoreColor(adoption)}
-          />
-        </Box>
+        <ProgressBar
+          value={adoption}
+          width={summaryWidth}
+          color={scoreColor(adoption)}
+        />
+      </Card>
+
+      <Box flexDirection="row" columnGap={2} marginTop={1}>
+        <GroupColumn
+          groups={left}
+          nameWidth={nameWidth}
+          showBar={showBar}
+        />
+        <GroupColumn
+          groups={right}
+          nameWidth={nameWidth}
+          showBar={showBar}
+        />
       </Box>
 
-      <Box flexDirection="column" marginTop={1}>
-        {toolsByCategory(tools).map((group) => (
-          <Box key={group.category} flexDirection="column" marginBottom={1}>
-            <Text bold color="white">
-              {CATEGORY_LABELS[group.category]}
-            </Text>
-            {group.tools.map((tool) => {
-              const active = tool.detected && tool.relevant
-              return (
-                <Box key={tool.name}>
-                  <Text color={active ? 'green' : 'white'}>{glyphs.dot} </Text>
-                  <Box width={16}>
-                    <Text color={active ? undefined : 'white'}>{tool.name}</Text>
-                  </Box>
-                  {active ? (
-                    <>
-                      <ProgressBar
-                        value={tool.adoptionRate}
-                        width={18}
-                        color={scoreColor(tool.adoptionRate)}
-                      />
-                      <Box width={10}>
-                        <Text color="white">
-                          {' '}
-                          {tool.contributorsUsing}/{tool.contributorCount}
-                        </Text>
-                      </Box>
-                    </>
-                  ) : (
-                    <Text color="white">
-                      {tool.relevant ? 'not detected' : 'not applicable'}
-                    </Text>
-                  )}
-                </Box>
-              )
-            })}
-          </Box>
-        ))}
+      <Box marginTop={1}>
+        <Text color={colors.dim} wrap="truncate-end">
+          Adoption is a file-touch proxy from the latest 30 commit diffs.
+        </Text>
       </Box>
-
-      <Text color="white">
-        Adoption is a file-touch proxy from the latest 30 commit diffs; it does
-        not prove a tool ran locally.
-      </Text>
     </Box>
   )
 }

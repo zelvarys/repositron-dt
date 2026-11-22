@@ -7,8 +7,11 @@ import type {
 } from '../../insights/types.js'
 import { relativeTime, truncate } from '../format.js'
 import { glyphs } from '../glyphs.js'
-import type { Tone } from '../theme.js'
+import { colors, type Tone } from '../theme.js'
+import { useViewport } from '../viewport.js'
 import { Badge } from '../components/Badge.js'
+import { Card } from '../components/Card.js'
+import { StatCard } from '../components/StatCard.js'
 
 type DependenciesTabProps = {
   report: RepositoryReport
@@ -21,33 +24,35 @@ const MODES: Array<{ key: Mode; label: string }> = [
   { key: 'outdated', label: 'Outdated' },
 ]
 
-const PAGE_SIZE = 8
-
 function statusOf(row: CheckedDependency): {
   label: string
   tone: Tone
 } {
-  if (row.outdated) return { label: 'OUTDATED', tone: 'yellow' }
-  if (row.latestVersion) return { label: 'current', tone: 'green' }
-  return { label: 'unverified', tone: 'white' }
+  if (row.outdated) return { label: 'outdated', tone: colors.yellow }
+  if (row.latestVersion) return { label: 'current', tone: colors.green }
+  return { label: 'unverified', tone: colors.muted }
 }
 
 export function DependenciesTab({ report }: DependenciesTabProps) {
   const { dependencies } = report
+  const { columns, rows } = useViewport()
   const [mode, setMode] = useState<Mode>('all')
   const [page, setPage] = useState(0)
   const current = Math.max(0, dependencies.checked - dependencies.outdated)
   const unverified = Math.max(0, dependencies.total - dependencies.checked)
+  const tableWidth = Math.max(50, columns - 6)
+  const nameWidth = Math.max(14, tableWidth - 40)
+  const pageSize = Math.max(3, rows - 19)
 
   const filtered = dependencies.rows.filter((row) => {
     if (mode === 'outdated') return row.outdated
     return true
   })
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize))
   const safePage = Math.min(page, totalPages - 1)
   const visible = filtered.slice(
-    safePage * PAGE_SIZE,
-    safePage * PAGE_SIZE + PAGE_SIZE,
+    safePage * pageSize,
+    safePage * pageSize + pageSize,
   )
 
   const cycleMode = () => {
@@ -66,123 +71,132 @@ export function DependenciesTab({ report }: DependenciesTabProps) {
   })
 
   return (
-    <Box flexDirection="column">
-      <Box justifyContent="space-between">
-        <Box flexDirection="column">
-          <Text bold color="blue">
-            DEPENDENCY REPORT
-          </Text>
-          <Text color="white">
-            {Object.entries(dependencies.ecosystems)
-              .map(([name, count]) => `${name} ${count}`)
-              .join('  ') || 'no manifests'}
-          </Text>
-        </Box>
-        <Text color="white">
-          checked {dependencies.checked}/{dependencies.total}{' '}
-          {relativeTime(dependencies.checkedAt)}
-        </Text>
+    <Box flexDirection="column" flexGrow={1} overflow="hidden">
+      <Box flexDirection="row" columnGap={1} flexShrink={0}>
+        <StatCard
+          title="Direct"
+          value={String(dependencies.total)}
+          detail="declared"
+        />
+        <StatCard
+          title="Outdated"
+          value={String(dependencies.outdated)}
+          tone={dependencies.outdated > 0 ? colors.yellow : colors.green}
+          detail="needs update"
+        />
+        <StatCard
+          title="Current"
+          value={String(current)}
+          tone={colors.green}
+          detail="up to date"
+        />
+        <StatCard
+          title="Unverified"
+          value={String(unverified)}
+          tone={unverified > 0 ? colors.muted : colors.green}
+          detail="not checked"
+        />
       </Box>
 
-      <Box marginTop={1} justifyContent="space-between">
-        <Box flexDirection="column">
-          <Text color="white">DIRECT</Text>
-          <Text bold>{dependencies.total}</Text>
-        </Box>
-        <Box flexDirection="column">
-          <Text color="white">OUTDATED</Text>
-          <Text bold color={dependencies.outdated > 0 ? 'yellow' : 'green'}>
-            {dependencies.outdated}
-          </Text>
-        </Box>
-        <Box flexDirection="column">
-          <Text color="white">CURRENT</Text>
-          <Text bold color="green">
-            {current}
-          </Text>
-        </Box>
-        <Box flexDirection="column">
-          <Text color="white">UNVERIFIED</Text>
-          <Text bold color={unverified > 0 ? 'white' : 'green'}>
-            {unverified}
-          </Text>
-        </Box>
-      </Box>
-
-      <Box marginTop={1}>
-        {MODES.map((item) => {
-          const active = item.key === mode
-          return (
-            <Box key={item.key} marginRight={1}>
+      <Box marginTop={1} justifyContent="space-between" flexShrink={0}>
+        <Box columnGap={1}>
+          {MODES.map((item) => {
+            const active = item.key === mode
+            return (
               <Text
-                color="white"
-                backgroundColor={active ? 'blue' : undefined}
+                key={item.key}
+                color={active ? colors.text : colors.muted}
+                backgroundColor={active ? colors.active : undefined}
                 bold={active}
               >
                 {' '}
                 {item.label}{' '}
               </Text>
-            </Box>
-          )
-        })}
-        <Text color="white">  Press f to change filter</Text>
-      </Box>
-
-      <Box marginTop={1} flexDirection="column">
-        <Text color="white">
-          {'Dependency'.padEnd(27)}
-          {'Type'.padEnd(8)}
-          {'Current'.padEnd(13)}
-          {'Latest'.padEnd(13)}
-          {'Status'}
-        </Text>
-        {visible.length === 0 ? (
-          <Text color="white">No dependencies in this view.</Text>
-        ) : (
-          visible.map((row) => {
-            const status = statusOf(row)
-            return (
-              <Box key={`${row.ecosystem}:${row.name}`}>
-                <Box width={27}>
-                  <Text>{truncate(row.name, 26)}</Text>
-                </Box>
-                <Box width={8}>
-                  <Text color="white">{row.ecosystem}</Text>
-                </Box>
-                <Box width={13}>
-                  <Text color="white">
-                    {row.version === ANY_VERSION
-                      ? 'any'
-                      : truncate(row.version, 12)}
-                  </Text>
-                </Box>
-                <Box width={13}>
-                  <Text color="white">
-                    {row.latestVersion
-                      ? truncate(row.latestVersion, 12)
-                      : 'unknown'}
-                  </Text>
-                </Box>
-                <Text color={status.tone}>{status.label}</Text>
-              </Box>
             )
-          })
-        )}
+          })}
+        </Box>
+        <Text color={colors.dim}>
+          {Object.entries(dependencies.ecosystems)
+            .map(([name, count]) => `${name} ${count}`)
+            .join('  ') || 'no manifests'}
+        </Text>
       </Box>
 
-      <Box marginTop={1} flexDirection="column">
-        <Box justifyContent="space-between">
-          <Text color="white">
-            {filtered.length} row{filtered.length === 1 ? '' : 's'}  |  page{' '}
-            {safePage + 1}/{totalPages}
-          </Text>
-          {dependencies.partial ? (
-            <Badge label="partial registry data" tone="yellow" />
+      <Box marginTop={1}>
+        <Card>
+          <Box height={1}>
+            <Box width={nameWidth}>
+              <Text color={colors.dim}>Dependency</Text>
+            </Box>
+            <Box width={8}>
+              <Text color={colors.dim}>Type</Text>
+            </Box>
+            <Box width={11}>
+              <Text color={colors.dim}>Current</Text>
+            </Box>
+            <Box width={11}>
+              <Text color={colors.dim}>Latest</Text>
+            </Box>
+            <Box width={10}>
+              <Text color={colors.dim}>Status</Text>
+            </Box>
+          </Box>
+          {visible.length === 0 ? (
+            <Text color={colors.muted}>
+              No dependencies in this view.
+            </Text>
           ) : (
-            <Text color="green">{glyphs.dot} registry lookups complete</Text>
+            visible.map((row) => {
+              const status = statusOf(row)
+              return (
+                <Box key={`${row.ecosystem}:${row.name}`} height={1}>
+                  <Box width={nameWidth}>
+                    <Text color={colors.text} wrap="truncate-end">
+                      {truncate(row.name, nameWidth - 1)}
+                    </Text>
+                  </Box>
+                  <Box width={8}>
+                    <Text color={colors.muted}>{row.ecosystem}</Text>
+                  </Box>
+                  <Box width={11}>
+                    <Text color={colors.muted} wrap="truncate-end">
+                      {row.version === ANY_VERSION
+                        ? 'any'
+                        : truncate(row.version, 10)}
+                    </Text>
+                  </Box>
+                  <Box width={11}>
+                    <Text color={colors.muted} wrap="truncate-end">
+                      {row.latestVersion
+                        ? truncate(row.latestVersion, 10)
+                        : 'unknown'}
+                    </Text>
+                  </Box>
+                  <Box width={10}>
+                    <Text color={status.tone} wrap="truncate-end">
+                      {status.label}
+                    </Text>
+                  </Box>
+                </Box>
+              )
+            })
           )}
-        </Box>
-        <Text color="white">Press left/right arrows to change page</Text>
+        </Card>
+      </Box>
+
+      <Box justifyContent="space-between" flexShrink={0}>
+        <Text color={colors.dim}>
+          {filtered.length} row{filtered.length === 1 ? '' : 's'}  |  page{' '}
+          {safePage + 1}/{totalPages}  |  checked{' '}
+          {relativeTime(dependencies.checkedAt)}
+        </Text>
+        {dependencies.partial ? (
+          <Badge label="partial registry data" tone={colors.yellow} />
+        ) : (
+          <Text color={colors.green}>
+            {glyphs.dot} registry lookups complete
+          </Text>
+        )}
       </Box>
     </Box>
   )
