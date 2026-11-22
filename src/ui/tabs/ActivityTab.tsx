@@ -41,8 +41,8 @@ export function ActivityTab({ report }: ActivityTabProps) {
   const contributorWidth = wide ? 20 : 16
 
   return (
-    <Box flexDirection="column" flexGrow={1} overflow="hidden">
-      <Box flexDirection="row" columnGap={1} flexGrow={4}>
+    <Box flexDirection="column" overflow="hidden">
+      <Box flexDirection="row" columnGap={1}>
         <StatCard
           title="Last 30 days"
           value={`${report.activity.commitsLast30} commits`}
@@ -62,8 +62,8 @@ export function ActivityTab({ report }: ActivityTabProps) {
         />
       </Box>
 
-      <Box flexGrow={3} marginTop={1}>
-        <Card title="Weekly rhythm" flexGrow={1}>
+      <Box marginTop={1}>
+        <Card title="Weekly rhythm">
           <Box justifyContent="space-between">
             <Text>
               <Text bold color={colors.blue}>
@@ -82,7 +82,7 @@ export function ActivityTab({ report }: ActivityTabProps) {
         </Card>
       </Box>
 
-      <Box flexDirection="row" columnGap={1} flexGrow={6} marginTop={1}>
+      <Box flexDirection="row" columnGap={1} marginTop={1}>
         <Card title="Top contributors" flexGrow={1}>
           {topContributors.length === 0 ? (
             <Text color={colors.muted}>

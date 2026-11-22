@@ -70,7 +70,7 @@ export function ScanningScreen({ repo, message }: ScanningScreenProps) {
             />
           </Box>
 
-          <Box flexDirection="column" marginTop={1} rowGap={1}>
+          <Box flexDirection="column" marginTop={1}>
             {PHASES.map((item, index) => {
               const done = index < phase
               const active = index === phase
