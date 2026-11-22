@@ -2,7 +2,10 @@ import { useEffect, useState } from 'react'
 import { Box, Text } from 'ink'
 import Spinner from 'ink-spinner'
 import type { GitHubRepo } from '../../github/repos.js'
-import { border } from '../theme.js'
+import { colors } from '../theme.js'
+import { useViewport } from '../viewport.js'
+import { Card } from '../components/Card.js'
+import { Footer } from '../components/Footer.js'
 import { Header } from '../components/Header.js'
 import { ProgressBar } from '../components/ProgressBar.js'
 
@@ -27,6 +30,7 @@ function currentPhase(message: string): number {
 }
 
 export function ScanningScreen({ repo, message }: ScanningScreenProps) {
+  const { columns } = useViewport()
   const [elapsed, setElapsed] = useState(0)
   const phase = currentPhase(message)
 
@@ -39,53 +43,65 @@ export function ScanningScreen({ repo, message }: ScanningScreenProps) {
   }, [])
 
   return (
-    <Box flexDirection="column">
+    <Box flexDirection="column" flexGrow={1}>
       <Header repo={repo ?? undefined} tab="scanning" />
       <Box
-        borderStyle={border}
-        borderColor="blue"
+        flexGrow={1}
         flexDirection="column"
+        paddingX={1}
         marginTop={1}
-        paddingX={2}
-        paddingY={1}
+        overflow="hidden"
       >
-        <Box justifyContent="space-between">
-          <Text bold color="blue">
-            SCANNING {repo?.full_name ?? 'repository'}
-          </Text>
-          <Text color="white">{elapsed}s elapsed</Text>
-        </Box>
-        <Box marginTop={1}>
-          <ProgressBar
-            value={((phase + 1) / PHASES.length) * 100}
-            width={36}
-            color="blue"
-          />
-        </Box>
+        <Card
+          title={`Scanning ${repo?.full_name ?? 'repository'}`}
+          borderColor={colors.active}
+        >
+          <Box justifyContent="space-between">
+            <Text color={colors.muted}>
+              Collecting repository signals
+            </Text>
+            <Text color={colors.muted}>{elapsed}s elapsed</Text>
+          </Box>
+          <Box marginTop={1}>
+            <ProgressBar
+              value={((phase + 1) / PHASES.length) * 100}
+              width={Math.max(12, Math.min(48, columns - 10))}
+              color={colors.blue}
+            />
+          </Box>
 
-        <Box flexDirection="column" marginTop={1}>
-          {PHASES.map((item, index) => {
-            const done = index < phase
-            const active = index === phase
-            return (
-              <Text
-                key={item.label}
-                color={done ? 'green' : active ? 'blue' : 'white'}
-              >
-                {done ? '[x]' : active ? '[>]' : '[ ]'} {item.label}
-                {active ? <Text color="white">  {message}</Text> : null}
-              </Text>
-            )
-          })}
-        </Box>
+          <Box flexDirection="column" marginTop={1} rowGap={1}>
+            {PHASES.map((item, index) => {
+              const done = index < phase
+              const active = index === phase
+              return (
+                <Text
+                  key={item.label}
+                  color={
+                    done
+                      ? colors.green
+                      : active
+                        ? colors.blue
+                        : colors.muted
+                  }
+                >
+                  {done ? '[x]' : active ? '[>]' : '[ ]'} {item.label}
+                  {active ? (
+                    <Text color={colors.dim}>  {message}</Text>
+                  ) : null}
+                </Text>
+              )
+            })}
+          </Box>
 
-        <Box marginTop={1} justifyContent="space-between">
-          <Text>
-            <Spinner type="dots" /> {message}
-          </Text>
-          <Text color="white">Press Ctrl+C to exit</Text>
-        </Box>
+          <Box marginTop={1}>
+            <Text color={colors.muted}>
+              <Spinner type="dots" /> {message}
+            </Text>
+          </Box>
+        </Card>
       </Box>
+      <Footer hints="Ctrl+C exits" />
     </Box>
   )
 }

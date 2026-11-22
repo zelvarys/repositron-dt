@@ -7,8 +7,9 @@ import type { GitHubClient } from '../../github/client.js'
 import { listRepos, type GitHubRepo } from '../../github/repos.js'
 import { compactNumber, relativeTime, truncate } from '../format.js'
 import { glyphs } from '../glyphs.js'
-import { border } from '../theme.js'
+import { border, colors } from '../theme.js'
 import { Badge } from '../components/Badge.js'
+import { Footer } from '../components/Footer.js'
 import { Header } from '../components/Header.js'
 import { StatusMessage } from '../components/StatusMessage.js'
 
@@ -23,7 +24,7 @@ type Focus = 'list' | 'search'
 function Pointer({ isSelected = false }: { isSelected?: boolean }) {
   return (
     <Box marginRight={1}>
-      <Text color={isSelected ? 'blue' : 'white'}>
+      <Text color={isSelected ? colors.blue : colors.muted}>
         {isSelected ? glyphs.pointer : ' '}
       </Text>
     </Box>
@@ -39,8 +40,11 @@ export function RepoPicker({ client, username, onSelect }: RepoPickerProps) {
   const [reload, setReload] = useState(0)
   const [highlighted, setHighlighted] = useState<GitHubRepo | null>(null)
   const { rows: terminalRows } = useWindowSize()
-  const listLimit = Math.max(3, Math.min(10, terminalRows - 19))
-  const showPreview = terminalRows >= 23
+  const showPreview = terminalRows >= 30
+  const listLimit = Math.max(
+    3,
+    Math.min(showPreview ? 8 : 12, terminalRows - (showPreview ? 24 : 16)),
+  )
 
   useEffect(() => {
     let cancelled = false
@@ -115,25 +119,32 @@ export function RepoPicker({ client, username, onSelect }: RepoPickerProps) {
   }))
 
   return (
-    <Box flexDirection="column">
+    <Box flexDirection="column" flexGrow={1}>
       <Header />
-      <Box marginTop={1} flexDirection="column">
-        <Box justifyContent="space-between" paddingX={1}>
-          <Text bold color="blue">
+
+      <Box
+        marginTop={1}
+        flexDirection="column"
+        flexGrow={1}
+        paddingX={1}
+        overflow="hidden"
+      >
+        <Box justifyContent="space-between">
+          <Text bold color={colors.blueSoft}>
             FIND A REPOSITORY
           </Text>
-          <Text color="white">
-            {repos.length} owned or contributed repos
+          <Text color={colors.muted}>
+            {repos.length} owned or contributed
           </Text>
         </Box>
 
         <Box
           borderStyle={border}
-          borderColor={focus === 'search' ? 'blue' : 'white'}
+          borderColor={focus === 'search' ? colors.active : colors.borderStrong}
           marginTop={1}
           paddingX={1}
         >
-          <Text color="blue">{'> '}</Text>
+          <Text color={colors.blue}>{'> '}</Text>
           {focus === 'search' ? (
             <TextInput
               value={query}
@@ -142,7 +153,7 @@ export function RepoPicker({ client, username, onSelect }: RepoPickerProps) {
               placeholder="Search repositories"
             />
           ) : (
-            <Text color={query ? undefined : 'white'}>
+            <Text color={colors.muted}>
               {query || 'Type to search, or press /'}
             </Text>
           )}
@@ -150,28 +161,33 @@ export function RepoPicker({ client, username, onSelect }: RepoPickerProps) {
 
         <Box
           borderStyle={border}
-          borderColor={focus === 'list' ? 'blue' : 'white'}
+          borderColor={focus === 'list' ? colors.active : colors.borderStrong}
           flexDirection="column"
           marginTop={1}
           paddingX={1}
+          overflow="hidden"
         >
           <Box justifyContent="space-between">
-            <Text bold>Repositories</Text>
-            <Text color="white">
-              {focus === 'list' ? 'Press arrow keys to move' : 'Press Enter to focus list'}
+            <Text bold color={colors.text}>
+              Repositories
+            </Text>
+            <Text color={colors.muted}>
+              {focus === 'list'
+                ? 'Press arrow keys to move'
+                : 'Press Enter to focus list'}
             </Text>
           </Box>
 
           {loading ? (
             <Box marginY={1}>
-              <Text>
+              <Text color={colors.muted}>
                 <Spinner type="dots" /> Loading owned and contributed repos...
               </Text>
             </Box>
           ) : error ? (
             <Box flexDirection="column" marginY={1}>
               <StatusMessage tone="error">{error}</StatusMessage>
-              <Text color="white">Press r to retry.</Text>
+              <Text color={colors.muted}>Press r to retry.</Text>
             </Box>
           ) : items.length === 0 ? (
             <Box marginY={1}>
@@ -195,54 +211,49 @@ export function RepoPicker({ client, username, onSelect }: RepoPickerProps) {
         {highlighted && !loading && !error && showPreview ? (
           <Box
             borderStyle={border}
-            borderColor="gray"
+            borderColor={colors.borderStrong}
             flexDirection="column"
             marginTop={1}
             paddingX={1}
           >
             <Box justifyContent="space-between">
-              <Text bold color="blue">
+              <Text bold color={colors.blue} wrap="truncate-end">
                 {highlighted.full_name}
               </Text>
               <Badge
                 label={highlighted.private ? 'private' : 'public'}
-                tone={highlighted.private ? 'yellow' : 'green'}
+                tone={highlighted.private ? colors.yellow : colors.green}
               />
             </Box>
-            <Text color="white">
+            <Text color={colors.muted} wrap="truncate-end">
               {highlighted.description ?? 'No repository description.'}
             </Text>
             <Box justifyContent="space-between">
-              <Text color="white">
+              <Text color={colors.muted}>
                 branch{' '}
-                <Text bold color="blue">
+                <Text bold color={colors.blue}>
                   {truncate(highlighted.default_branch, 18)}
                 </Text>
-                <Text color="blue">  {glyphs.bullet}  </Text>
+                <Text color={colors.blue}>  {glyphs.bullet}  </Text>
                 stars{' '}
-                <Text bold color="blue">
+                <Text bold color={colors.blue}>
                   {compactNumber(highlighted.stargazers_count)}
                 </Text>
-                <Text color="blue">  {glyphs.bullet}  </Text>
+                <Text color={colors.blue}>  {glyphs.bullet}  </Text>
                 forks{' '}
-                <Text bold color="blue">
+                <Text bold color={colors.blue}>
                   {compactNumber(highlighted.forks_count)}
                 </Text>
               </Text>
-              <Text color="white">
+              <Text color={colors.muted}>
                 updated {relativeTime(highlighted.updated_at)}
               </Text>
             </Box>
           </Box>
         ) : null}
-
-        <Box marginTop={1} paddingX={1} justifyContent="space-between">
-          <Text color="white">
-            {filtered.length} match{filtered.length === 1 ? '' : 'es'}  |  Press Esc leaves search
-          </Text>
-          <Text color="white">Press Enter to scan  |  Ctrl+C exits</Text>
-        </Box>
       </Box>
+
+      <Footer hints="Enter: scan  ·  /: search  ·  r: retry  ·  Ctrl+C exits" />
     </Box>
   )
 }
