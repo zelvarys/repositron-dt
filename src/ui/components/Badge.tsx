@@ -1,6 +1,6 @@
 import { Text } from 'ink'
 import { glyphs } from '../glyphs.js'
-import type { Tone } from '../theme.js'
+import { colors, type Tone } from '../theme.js'
 
 type BadgeProps = {
   label: string
@@ -8,7 +8,7 @@ type BadgeProps = {
   dot?: boolean
 }
 
-export function Badge({ label, tone = 'white', dot = true }: BadgeProps) {
+export function Badge({ label, tone = colors.text, dot = true }: BadgeProps) {
   return (
     <Text color={tone}>
       {dot ? `${glyphs.dot} ` : ''}

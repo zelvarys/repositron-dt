@@ -3,7 +3,10 @@ import { Box, Text, useInput } from 'ink'
 import { GitHubClient } from '../github/client.js'
 import type { GitHubRepo } from '../github/repos.js'
 import { scanRepository, type ScanResult } from '../scan.js'
-import { border } from './theme.js'
+import { colors } from './theme.js'
+import { TerminalFrame } from './viewport.js'
+import { Card } from './components/Card.js'
+import { Footer } from './components/Footer.js'
 import { Header } from './components/Header.js'
 import { StatusMessage } from './components/StatusMessage.js'
 import { RepoPicker } from './screens/RepoPicker.js'
@@ -13,7 +16,6 @@ import { Dashboard } from './screens/Dashboard.js'
 type AppProps = {
   token: string
   username: string
-  clearScreen: () => void
 }
 
 type View = 'picker' | 'scanning' | 'dashboard' | 'error'
@@ -29,29 +31,24 @@ function ErrorScreen({ message, onBack }: ErrorScreenProps) {
   })
 
   return (
-    <Box flexDirection="column">
+    <Box flexDirection="column" flexGrow={1}>
       <Header tab="error" />
-      <Box
-        borderStyle={border}
-        borderColor="red"
-        flexDirection="column"
-        marginTop={1}
-        paddingX={2}
-        paddingY={1}
-      >
-        <Text bold color="red">
-          SCAN INTERRUPTED
-        </Text>
-        <StatusMessage tone="error">{message}</StatusMessage>
-        <Box marginTop={1}>
-          <Text color="white">q or Esc returns to the repository picker.</Text>
-        </Box>
+      <Box flexGrow={1} paddingX={1} marginTop={1}>
+        <Card title="Scan interrupted" borderColor={colors.red}>
+          <StatusMessage tone="error">{message}</StatusMessage>
+          <Box marginTop={1}>
+            <Text color={colors.muted}>
+              Press q or Esc to return to the repository picker.
+            </Text>
+          </Box>
+        </Card>
       </Box>
+      <Footer hints="q or Esc returns to the repository picker" />
     </Box>
   )
 }
 
-export function App({ token, username, clearScreen }: AppProps) {
+export function App({ token, username }: AppProps) {
   const client = useMemo(() => new GitHubClient(token), [token])
   const [view, setView] = useState<View>('picker')
   const [scanningRepo, setScanningRepo] = useState<GitHubRepo | null>(null)
@@ -78,32 +75,28 @@ export function App({ token, username, clearScreen }: AppProps) {
   }
 
   const backToPicker = () => {
-    clearScreen()
     setResult(null)
     setScanningRepo(null)
     setError(null)
     setView('picker')
   }
 
-  if (view === 'scanning') {
-    return (
-      <ScanningScreen repo={scanningRepo} message={scanMessage} />
-    )
-  }
-
-  if (view === 'dashboard' && result) {
-    return (
-      <Dashboard result={result} onBack={backToPicker} />
-    )
-  }
-
-  if (view === 'error') {
-    return (
-      <ErrorScreen message={error ?? 'Unknown error'} onBack={backToPicker} />
-    )
-  }
-
-  return (
+  let screen = (
     <RepoPicker client={client} username={username} onSelect={startScan} />
   )
+
+  if (view === 'scanning') {
+    screen = <ScanningScreen repo={scanningRepo} message={scanMessage} />
+  } else if (view === 'dashboard' && result) {
+    screen = <Dashboard result={result} onBack={backToPicker} />
+  } else if (view === 'error') {
+    screen = (
+      <ErrorScreen
+        message={error ?? 'Unknown error'}
+        onBack={backToPicker}
+      />
+    )
+  }
+
+  return <TerminalFrame>{screen}</TerminalFrame>
 }

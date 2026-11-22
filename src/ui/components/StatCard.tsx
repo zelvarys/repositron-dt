@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
-import { Box, Text } from 'ink'
-import { border, type Tone } from '../theme.js'
+import { Text } from 'ink'
+import { colors, type Tone } from '../theme.js'
+import { Card } from './Card.js'
 
 type StatCardProps = {
   title: string
@@ -8,32 +9,30 @@ type StatCardProps = {
   detail?: string
   tone?: Tone
   children?: ReactNode
+  flexGrow?: number
 }
 
 export function StatCard({
   title,
   value,
   detail,
-  tone = 'blue',
+  tone = colors.blue,
   children,
+  flexGrow = 1,
 }: StatCardProps) {
   return (
-    <Box
-      borderStyle={border}
-      borderColor="gray"
-      flexDirection="column"
-      flexGrow={1}
-      flexBasis={0}
-      paddingX={1}
-    >
-      <Text color="white">{title.toUpperCase()}</Text>
+    <Card title={title} flexGrow={flexGrow}>
       {value ? (
-        <Text bold color={tone}>
+        <Text bold color={tone} wrap="truncate-end">
           {value}
         </Text>
       ) : null}
-      {detail ? <Text color="white">{detail}</Text> : null}
+      {detail ? (
+        <Text color={colors.muted} wrap="truncate-end">
+          {detail}
+        </Text>
+      ) : null}
       {children}
-    </Box>
+    </Card>
   )
 }

@@ -1,6 +1,6 @@
 import { Text } from 'ink'
 import { glyphs } from '../glyphs.js'
-import { scoreColor, type Tone } from '../theme.js'
+import { colors, scoreColor, type Tone } from '../theme.js'
 
 type ProgressBarProps = {
   value: number
@@ -21,9 +21,9 @@ export function ProgressBar({
   return (
     <Text>
       <Text color={tone}>{glyphs.filled.repeat(filled)}</Text>
-      <Text color="white">{glyphs.empty.repeat(width - filled)}</Text>
+      <Text color={colors.border}>{glyphs.empty.repeat(width - filled)}</Text>
       {showPercent ? (
-        <Text color="white"> {clamped.toFixed(0).padStart(3)}%</Text>
+        <Text color={colors.muted}> {clamped.toFixed(0).padStart(3)}%</Text>
       ) : null}
     </Text>
   )
