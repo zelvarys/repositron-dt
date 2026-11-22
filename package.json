@@ -1,6 +1,6 @@
 {
   "name": "repositron",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Interactive terminal dashboard that scans GitHub repositories and surfaces activity, dependencies, workflow health, bus factor, and tool adoption",
   "license": "MIT",
   "repository": {
